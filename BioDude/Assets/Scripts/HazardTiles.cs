@@ -192,7 +192,6 @@ public class HazardTiles : MonoBehaviour
             {
                 Slow();
             }
-            else;
         else
         {
             if (!onTriggerStay2D)

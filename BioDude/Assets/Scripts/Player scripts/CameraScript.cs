@@ -29,11 +29,6 @@ public class CameraScript : MonoBehaviour {
     [SerializeField]
     float MaxOffset = 10;
 
-    //for TESTING
-    [SerializeField]
-    float TestingForce = 10;
-    /////////
-
     private Vector2 FollowingPos;
     private Vector2 Offset;
 

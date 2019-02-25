@@ -107,7 +107,6 @@ public class WeaponManager : MonoBehaviour
     private AudioSource weaponAudioSource;
     private AudioSource reloadAudioSource;
     private AudioSource emptyAudioSource;
-    private AchievementManager notifications;
 
     private RawImage ammoImage;
     private RawImage explosiveImage;
@@ -131,7 +130,6 @@ public class WeaponManager : MonoBehaviour
         LoadFromPrefs();
         ///
 
-        notifications = GameObject.Find("AchievementManager").GetComponent<AchievementManager>();
         knifeScript = knife.GetComponent<Knife>();
         projectiles = GameObject.Find("Projectiles").transform;
         mainCameraScript = GameObject.Find("Main Camera").GetComponent<CameraScript>();
@@ -844,7 +842,6 @@ public class WeaponManager : MonoBehaviour
         if (!weapon.isDiscovered) // not yet
         {
             weapon.isDiscovered = true;
-            notifications.Notify(weapon.name + " discovered!");
             DisplayDiscoveredWeapon(idx);
         }
         AddAmmoByWeaponIndex(idx, weapon.clipSize * 2);
@@ -889,7 +886,6 @@ public class WeaponManager : MonoBehaviour
                 ReloadOnPickup(fireArmAmmo[i].name);
                 UpdateWeaponGUI();
                 UpdateBulletGUI();
-                notifications.Notify(added.ToString() + " " + fireArmAmmo[i].name.ToString() + " ammo added");
                 return added;
             }
         }
@@ -899,7 +895,6 @@ public class WeaponManager : MonoBehaviour
                 int added = explosiveAmmo[i].AddAmmo(amount);
                 UpdateWeaponGUI();
                 UpdateExplosiveGUI();
-                notifications.Notify(added.ToString() + " " + explosiveAmmo[i].name.ToString() + " added");
                 return added;
             }
         return -1;
@@ -946,7 +941,6 @@ public class WeaponManager : MonoBehaviour
             ReloadOnPickup(index);
             UpdateWeaponGUI();
             UpdateBulletGUI();
-            notifications.Notify(added.ToString() + " " + fireArmAmmo[index].name.ToString() + " ammo added");
             return added;
         }
         return -1;
@@ -986,7 +980,6 @@ public class WeaponManager : MonoBehaviour
             UpdateWeaponGUI();
             if (index == selectedFireArm)
                 UpdateBulletGUI();
-            notifications.Notify(added.ToString() + " " + fireArmAmmo[ammoType].name.ToString() + " ammo added");
             return added;
         }
         return -1;
@@ -1023,7 +1016,6 @@ public class WeaponManager : MonoBehaviour
         {
             int added = explosiveAmmo[index].AddAmmo(amount);
             UpdateExplosiveGUI();
-            notifications.Notify(added.ToString() + " " + explosiveAmmo[index].name.ToString() + " added");
             return added;
         }
         return -1;

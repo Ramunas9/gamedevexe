@@ -6,8 +6,8 @@ public class Head : MonoBehaviour {
 
     public float rotationSpeed = 1f;
     private bool canRotate = true;
-    public bool isRotated = false; // is head finished rotating to its target angle
-    private float angle;
+    public bool isRotated; // is head finished rotating to its target angle
+//    private float angle;
     //public bool isRotating = false;
 
     public float targetAngle;
@@ -16,10 +16,10 @@ public class Head : MonoBehaviour {
 
 
     // Use this for initialization
-    void Start () {
+//    void Start () {
         //currentrotation = transform.rotation.z;
         //prevRotation = currentrotation;
-	}
+//	}
 	
 	// Update is called once per frame
 	void Update ()
@@ -28,7 +28,7 @@ public class Head : MonoBehaviour {
         //isRotating = (prevRotation != currentrotation);
         //prevRotation = currentrotation;
 
-        angle = Quaternion.Angle(transform.rotation, Quaternion.Euler(0, 0, targetAngle)); 
+//        angle = Quaternion.Angle(transform.rotation, Quaternion.Euler(0, 0, targetAngle)); 
         if (canRotate && !isRotated)
         {
             isRotated = (Quaternion.Angle(transform.rotation, Quaternion.Euler(0, 0, targetAngle)) == 0);

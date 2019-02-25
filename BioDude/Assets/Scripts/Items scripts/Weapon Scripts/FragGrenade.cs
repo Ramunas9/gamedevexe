@@ -14,13 +14,13 @@ public class FragGrenade : Explosive
     public float radius = 3f;
     public float force = 500f;
     public float damage = 1f;
-    private Rigidbody2D rb;
+//    private Rigidbody2D rb;
 
     // Use this for initialization
     void Start()
     {
         countdown = delay;
-        rb = GetComponent<Rigidbody2D>();
+//        rb = GetComponent<Rigidbody2D>();
         //started = true;
     }
 

@@ -13,13 +13,13 @@ public class Gravnade : Explosive
     bool exploded = false;
     public float radius = 3f;
     public float force = 500f;
-    private Rigidbody2D rb;
+//    private Rigidbody2D rb;
 
     // Use this for initialization
     void Start()
     {
         countdown = delay;
-        rb = GetComponent<Rigidbody2D>();
+//        rb = GetComponent<Rigidbody2D>();
     }
 
 

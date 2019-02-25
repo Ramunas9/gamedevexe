@@ -704,7 +704,8 @@ public class WeaponManager : MonoBehaviour
                     if (explosiveArray[selectedExplosive] != null)
                     {
                         //var nade = PrefabUtility.InstantiatePrefab(explosiveArray[selectedExplosive]) as GameObject;
-                        GameObject nade = Instantiate(activeGrenade, instantiatePos, transform.rotation);
+//                        GameObject nade = Instantiate(activeGrenade, instantiatePos, transform.rotation);
+                        Instantiate(activeGrenade, instantiatePos, transform.rotation);
                         //nade.Throw(500);
                     }
                 }

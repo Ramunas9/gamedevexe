@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class Richochet : MonoBehaviour {
 
-    private LayerMask wallMask;
-    private Rigidbody2D rigidbody;
+//    private LayerMask wallMask;
+    private new Rigidbody2D rigidbody;
 
     public void Awake()
     {
-        wallMask = LayerMask.GetMask("Collider");
+//        wallMask = LayerMask.GetMask("Collider");
         rigidbody = transform.GetComponent<Rigidbody2D>();
     }
    

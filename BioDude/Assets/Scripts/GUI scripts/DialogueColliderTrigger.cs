@@ -6,7 +6,7 @@ public class DialogueColliderTrigger : MonoBehaviour {
 
     public Dialogue[] dialogue;
     public bool active = true;
-    public bool multi_use = false;
+    public bool multi_use;
 
     void OnTriggerEnter2D(Collider2D collision)
     {

@@ -16,6 +16,10 @@ TagManager:
   - Bouncy
   - VideoSurface
   - AlertionIndicator
+  - Agent
+  - Overmind
+  - PositionStart
+  - PositionFinish
   layers:
   - Default
   - TransparentFX

@@ -24,15 +24,44 @@ public class NeuralNet : MonoBehaviour
         woi.randomize();
     }
 
+    //mutation function for genetic algorithm
+    void mutate(float mr)
+    {
+        //mutates each weight matrix
+//        whi.mutate(mr);
+//        whh.mutate(mr);
+//        woh.mutate(mr);
+        woi.mutate(mr);
+    }
+
+    float[] output(float[] inputsArr)
+    {
+        //convert array to matrix
+        //Note woh has nothing to do with it its just a function in the Matrix class
+        Matrix inputs = Matrix.singleColumnMatrixFromArray(inputsArr);
+
+        //add bias 
+        Matrix inputsBias = inputs.addBias();
+
+
+        //-----------------------calculate the guessed output
+        
+        //apply weights
+        Matrix outputInputs = woi.dot(inputsBias);
+        //pass through activation function(sigmoid)
+        Matrix outputs = outputInputs.activate();
+
+        //convert to an array and return
+        return outputs.toArray();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
     void Update()
     {
-        
     }
 }

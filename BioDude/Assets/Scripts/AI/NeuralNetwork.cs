@@ -56,9 +56,6 @@ public class NeuralNetwork
         Matrix outputInputs = woi.dot(inputsBias);
         //pass through activation function(sigmoid)
         Matrix outputs = outputInputs.activate();
-        
-        outputInputs.output();
-        outputs.output();
 
         //convert to an array and return
         return outputs.toArray();

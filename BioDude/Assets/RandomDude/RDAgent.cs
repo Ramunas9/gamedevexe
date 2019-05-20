@@ -160,7 +160,7 @@ public class RDAgent : MonoBehaviour
 
         for (int i = 0; i < decision.Length; i++)
         {
-            Debug.DrawRay(transform.position, translateIndexToDirection(i) * decision[i] * visionDistance,
+            Debug.DrawRay(transform.position, translateIndexToDirection(i) * decision[i] * visionDistance / 2,
                 maxIndex == i ? Color.green : Color.yellow);
         }
 
@@ -169,7 +169,7 @@ public class RDAgent : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D col)
     {
-        Debug.Log(col.gameObject.tag);
+//        Debug.Log(col.gameObject.tag);
         if (col.gameObject.tag != posFinishTag)
         {
             hp--;

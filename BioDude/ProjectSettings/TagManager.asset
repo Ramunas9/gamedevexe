@@ -16,6 +16,8 @@ TagManager:
   - Bouncy
   - VideoSurface
   - AlertionIndicator
+  - Undefined
+  - PositionFinish
   layers:
   - Default
   - TransparentFX

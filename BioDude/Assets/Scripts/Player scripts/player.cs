@@ -1,6 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+// ReSharper disable InconsistentNaming
+// ReSharper disable SuggestVarOrType_BuiltInTypes
+// ReSharper disable CheckNamespace
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedMember.Local
+// ReSharper disable ArrangeTypeMemberModifiers
+// ReSharper disable SuggestBaseTypeForParameter
+// ReSharper disable MemberCanBeMadeStatic.Local
 
 public class player : Character
 {

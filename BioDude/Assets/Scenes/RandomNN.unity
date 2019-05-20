@@ -465,7 +465,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2aef6798da44bad4dabe8640c7684eff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 0}
+  maxSteps: 10000
+  playerPrefab: {fileID: 1208211519}
+  mutationRate: 0.1
 --- !u!4 &441260170
 Transform:
   m_ObjectHideFlags: 0
@@ -22687,11 +22689,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1709552391}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 794762b86867f5f4ba5de282d798cb1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Name: 
-  m_Name: 
+  playerTag: Agent
 --- !u!61 &1709552395
 BoxCollider2D:
   m_ObjectHideFlags: 0

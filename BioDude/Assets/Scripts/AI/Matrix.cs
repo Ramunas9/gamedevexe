@@ -159,16 +159,17 @@ public class Matrix
     {
         for (int i = 0; i < rows; i++)
         {
+            string line = "";
             for (int j = 0; j < cols; j++)
             {
-                Console.Write(matrix[i, j] + "  ");
+                line += (matrix[i, j] + "  ");
             }
 
-            Console.WriteLine(" ");
+            Debug.Log("/" + line);
         }
 
 
-        Console.WriteLine();
+        Debug.Log("----------------------------------------");
     }
 
     // Start is called before the first frame update

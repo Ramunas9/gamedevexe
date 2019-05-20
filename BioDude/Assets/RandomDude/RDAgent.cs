@@ -15,8 +15,7 @@ public class RDAgent : MonoBehaviour
     public float moveForce;
     public int visionDistance;
 
-    [HideInInspector]
-    public bool isBest = false;
+    [HideInInspector] public bool isBest = false;
     public bool dead = false;
     public int stepCount { get; private set; }
     public bool finished { get; private set; }
@@ -81,6 +80,9 @@ public class RDAgent : MonoBehaviour
             vision[i] = lookInDirection(i);
         }
 
+        vision[8] = Vector3.Distance(transform.position, posFinish);
+        Debug.DrawLine(transform.position, posFinish, Color.blue);
+
         return vision;
     }
 
@@ -128,7 +130,7 @@ public class RDAgent : MonoBehaviour
 //        layerMaskWall = ~layerMaskWall;
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, visionDistance, layerMaskWall);
-        
+
         Debug.DrawRay(transform.position, direction * visionDistance, Color.white);
 
         if (hit.collider != null)
@@ -154,6 +156,12 @@ public class RDAgent : MonoBehaviour
                 max = decision[i];
                 maxIndex = i;
             }
+        }
+
+        for (int i = 0; i < decision.Length; i++)
+        {
+            Debug.DrawRay(transform.position, translateIndexToDirection(i) * decision[i] * visionDistance,
+                maxIndex == i ? Color.green : Color.yellow);
         }
 
         return maxIndex;

@@ -5,7 +5,7 @@ using UnityEngine;
 public class NeuralNet : MonoBehaviour
 {
     int iNodes;
-    int hNodes;
+//    int hNodes;
     int oNodes;
 
     // Matrix whi; //matrix containing weights between the input nodes and the hidden nodes
@@ -13,11 +13,11 @@ public class NeuralNet : MonoBehaviour
     // Matrix woh; //matrix containing weights between the second hidden layer nodes and the output nodes
     Matrix woi; //matrix containing weights between the input and the output nodes
 
-    public NeuralNet(int inputs, int hiddenCount, int outputCount)
+    public NeuralNet(int inputs, int outputCount)
     {
         iNodes = inputs;
         oNodes = outputCount;
-        hNodes = hiddenCount;
+//        hNodes = hiddenCount;
 
         woi = new Matrix(oNodes, iNodes + 1);
 
@@ -25,7 +25,7 @@ public class NeuralNet : MonoBehaviour
     }
 
     //mutation function for genetic algorithm
-    void mutate(float mr)
+    public void mutate(float mr)
     {
         //mutates each weight matrix
 //        whi.mutate(mr);
@@ -34,7 +34,7 @@ public class NeuralNet : MonoBehaviour
         woi.mutate(mr);
     }
 
-    float[] output(float[] inputsArr)
+    public float[] output(float[] inputsArr)
     {
         //convert array to matrix
         //Note woh has nothing to do with it its just a function in the Matrix class

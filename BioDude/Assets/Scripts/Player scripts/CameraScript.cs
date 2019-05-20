@@ -119,8 +119,8 @@ public class CameraScript : MonoBehaviour {
         {
             if (direction == Vector2.zero)
             {
-                float dirAngle = Player.GetComponent<player>().GetDirectionAngle() * Mathf.Deg2Rad;
-                direction = new Vector2(-Mathf.Cos(dirAngle), -Mathf.Sin(dirAngle));
+//                float dirAngle = Player.GetComponent<player>().GetDirectionAngle() * Mathf.Deg2Rad;
+//                direction = new Vector2(-Mathf.Cos(dirAngle), -Mathf.Sin(dirAngle));
             }
             Offset = transform.position - Player.transform.position;
             Offset += (direction * magnitude * (1 -  Vector2.Dot(Offset, direction) / MaxOffset)); // further from player camera is - less powerfull recoil

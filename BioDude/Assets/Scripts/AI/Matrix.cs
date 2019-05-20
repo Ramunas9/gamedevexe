@@ -10,7 +10,7 @@ using Random = System.Random;
 // ReSharper disable SuggestBaseTypeForParameter
 // ReSharper disable MemberCanBeMadeStatic.Local
 
-public class Matrix : MonoBehaviour
+public class Matrix
 {
     private int rows;
     private int cols;
@@ -161,7 +161,7 @@ public class Matrix : MonoBehaviour
         {
             for (int j = 0; j < cols; j++)
             {
-                print(matrix[i, j] + "  ");
+                Console.Write(matrix[i, j] + "  ");
             }
 
             Console.WriteLine(" ");

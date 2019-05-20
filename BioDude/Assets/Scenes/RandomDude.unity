@@ -23459,8 +23459,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 152087241bcf8434bb0bd570bf16e4c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agentCount: 2
-  maxSteps: 1000
+  agentCount: 4
+  maxSteps: 10000
   agentPrefab: {fileID: 7155626595190983555, guid: 9ead7fe9bdcb10c4382f4365898eff94,
     type: 3}
   mutationRate: 0.02
@@ -23572,7 +23572,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1402278668318736}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.005, y: 19.56, z: 0}
+  m_LocalPosition: {x: 0.005, y: 12.74, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_Children: []
   m_Father: {fileID: 604402281}
@@ -23675,11 +23675,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7153913101886639520, guid: 9ead7fe9bdcb10c4382f4365898eff94,
-        type: 3}
-      propertyPath: visionDistance
-      value: 20
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9ead7fe9bdcb10c4382f4365898eff94, type: 3}

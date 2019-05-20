@@ -8,7 +8,7 @@
 // ReSharper disable SuggestBaseTypeForParameter
 // ReSharper disable MemberCanBeMadeStatic.Local
 
-public class NeuralNetwork : MonoBehaviour
+public class NeuralNetwork
 {
     int iNodes;
 //    int hNodes;

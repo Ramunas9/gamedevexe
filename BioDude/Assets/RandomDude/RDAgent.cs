@@ -58,9 +58,9 @@ public class RDAgent : MonoBehaviour
             if (stepCount < stepCountMax)
             {
                 float[] vision = look();
-//                int direction = decideDirection(vision);
+                int direction = decideDirection(vision);
 
-                rb.AddForce(translateIndexToDirection(steps[stepCount]) * moveForce); // take a step from steps array
+                rb.AddForce(translateIndexToDirection(direction) * moveForce); // take a step from steps array
                 stepCount++;
             }
             else
@@ -87,53 +87,55 @@ public class RDAgent : MonoBehaviour
     // casts ray in direction by index and returns distance to wall if in vision distance or -1 otherwise.
     float lookInDirection(int directionIndex)
     {
-        Vector3 direction;
+        int angle;
 
         switch (directionIndex)
         {
             case 0:
-                direction = new Vector3(0, 1, 0);
+                angle = 0;
                 break;
             case 1:
-                direction = new Vector3(0.5f, 0.5f, 0);
+                angle = 45;
                 break;
             case 2:
-                direction = new Vector3(1, 0, 0);
+                angle = 90;
                 break;
             case 3:
-                direction = new Vector3(0.5f, -0.5f, 0);
+                angle = 135;
                 break;
             case 4:
-                direction = new Vector3(0, -1, 0);
+                angle = 180;
                 break;
             case 5:
-                direction = new Vector3(-0.5f, -0.5f, 0);
+                angle = 225;
                 break;
             case 6:
-                direction = new Vector3(-1, 0, 0);
+                angle = 270;
                 break;
             case 7:
-                direction = new Vector3(-0.5f, 0.5f, 0);
+                angle = 315;
                 break;
             default:
-                direction = Vector3.zero;
+                angle = 0;
                 break;
         }
+
+        Vector3 direction = Quaternion.Euler(0, 0, angle) * new Vector3(0, 1);
+        direction = new Vector2(direction.x, direction.y);
 
         // Bit shift the index of the layer (17) to get a bit mask
         int layerMaskWall = 1 << 17;
+//        layerMaskWall = ~layerMaskWall;
 
-        RaycastHit hit;
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, visionDistance, layerMaskWall);
+        
+        Debug.DrawRay(transform.position, direction * visionDistance, Color.white);
 
-        if (Physics.Raycast(transform.position, transform.TransformDirection(direction), out hit, visionDistance, layerMaskWall))
+        if (hit.collider != null)
         {
-            Debug.DrawRay(transform.position, transform.TransformDirection(direction) * hit.distance, Color.yellow);
-            Debug.Log("Did hit at " + hit.distance);
+            Debug.DrawRay(transform.position, direction * hit.distance, Color.red);
             return hit.distance;
         }
-
-        Debug.DrawRay(transform.position, direction * 2, Color.white);
-        Debug.Log("Did not hit");
 
         return -1;
     }

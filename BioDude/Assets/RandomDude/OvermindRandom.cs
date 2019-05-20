@@ -46,7 +46,7 @@ public class OvermindRandom : MonoBehaviour
 
     void FixedUpdate()
     {
-        Debug.Log(stepCount++);
+//        Debug.Log(stepCount++);
     }
 
     void startNewGeneration()
@@ -80,10 +80,10 @@ public class OvermindRandom : MonoBehaviour
                 parents[i] = new int[maxSteps];
                 int index = getRandParent();
                 System.Array.Copy(agents[index].steps, parents[i], maxSteps);
-                Debug.Log("agent: " + agents[index].steps[0]);
-                Debug.Log("parent: " + parents[i][0]);
+//                Debug.Log("agent: " + agents[index].steps[0]);
+//                Debug.Log("parent: " + parents[i][0]);
             }
-            Debug.Log("parent AFTER: " + parents[1][0]);
+//            Debug.Log("parent AFTER: " + parents[1][0]);
 
             // get parent steps, mutate them and assign to agent
             for (int i = 1; i < agentCount; i++) 
@@ -103,7 +103,7 @@ public class OvermindRandom : MonoBehaviour
             agents[i].transform.position = posStart.position;
 
 
-        Debug.Log(agentCountCurrent);
+//        Debug.Log(agentCountCurrent);
     }
 
     void setBestDot()

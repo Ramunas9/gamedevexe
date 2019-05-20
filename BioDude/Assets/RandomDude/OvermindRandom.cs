@@ -1,26 +1,32 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+// ReSharper disable InconsistentNaming
+// ReSharper disable SuggestVarOrType_BuiltInTypes
+// ReSharper disable CheckNamespace
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedMember.Local
+// ReSharper disable ArrangeTypeMemberModifiers
+// ReSharper disable SuggestBaseTypeForParameter
+// ReSharper disable MemberCanBeMadeStatic.Local
 
 
 public class OvermindRandom : MonoBehaviour
 {
-    public int agentCount = 1;
-    public int maxSteps = 10000;
+    public int agentCount;
+    public int maxSteps;
     public Transform agentPrefab;
-    public float mutationRate = 0.1f;
+    public float mutationRate;
 
     private Transform posFinish;
     private Transform posStart;
     private Transform agentsFolder;
     private RDAgent[] agents;
-    private int generation = 0;
+    private int generation;
 
     private int agentCountCurrent;
-    private float fitnessSum = 0;
-    private int bestAgentIndex = 0;
+    private float fitnessSum;
+    private int bestAgentIndex;
 
-    private int stepCount = 0;
+    private int stepCount;
 
     // Start is called before the first frame update
     void Start()

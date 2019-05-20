@@ -1,11 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+
+// ReSharper disable InconsistentNaming
+// ReSharper disable SuggestVarOrType_BuiltInTypes
+// ReSharper disable CheckNamespace
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedMember.Local
+// ReSharper disable ArrangeTypeMemberModifiers
+// ReSharper disable SuggestBaseTypeForParameter
+// ReSharper disable MemberCanBeMadeStatic.Local
 
 public class RDAgent : MonoBehaviour
 {
-    public int hp = 1;
-    public float moveForce = 10f;
+    public int hp;
+    public float moveForce;
+    public int visionDistance;
 
     [HideInInspector]
     public bool isBest = false;
@@ -15,10 +23,13 @@ public class RDAgent : MonoBehaviour
     public int[] steps { get; private set; }
 
     private OvermindRandom overmind;
+    private NeuralNetwork brain;
+
+    private float[] decision;
 
     public float fitness { get; private set; }
     private int stepCountMax = 0;
-    
+
     private string posFinishTag = "PositionFinish";
     private Vector3 posFinish;
     private Rigidbody2D rb;
@@ -33,6 +44,9 @@ public class RDAgent : MonoBehaviour
         stepCountMax = overmind.maxSteps;
         steps = new int[stepCountMax];
         randomizeSteps();
+
+        brain = new NeuralNetwork(9, 4);
+
         Revive();
     }
 
@@ -41,8 +55,11 @@ public class RDAgent : MonoBehaviour
     {
         if (!dead && !finished)
         {
-            if(stepCount < stepCountMax)
+            if (stepCount < stepCountMax)
             {
+                float[] vision = look();
+//                int direction = decideDirection(vision);
+
                 rb.AddForce(translateIndexToDirection(steps[stepCount]) * moveForce); // take a step from steps array
                 stepCount++;
             }
@@ -55,10 +72,95 @@ public class RDAgent : MonoBehaviour
         }
     }
 
+    float[] look()
+    {
+        float[] vision = new float[9];
+
+        for (int i = 0; i < 8; i++)
+        {
+            vision[i] = lookInDirection(i);
+        }
+
+        return vision;
+    }
+
+    // casts ray in direction by index and returns distance to wall if in vision distance or -1 otherwise.
+    float lookInDirection(int directionIndex)
+    {
+        Vector3 direction;
+
+        switch (directionIndex)
+        {
+            case 0:
+                direction = new Vector3(0, 1, 0);
+                break;
+            case 1:
+                direction = new Vector3(0.5f, 0.5f, 0);
+                break;
+            case 2:
+                direction = new Vector3(1, 0, 0);
+                break;
+            case 3:
+                direction = new Vector3(0.5f, -0.5f, 0);
+                break;
+            case 4:
+                direction = new Vector3(0, -1, 0);
+                break;
+            case 5:
+                direction = new Vector3(-0.5f, -0.5f, 0);
+                break;
+            case 6:
+                direction = new Vector3(-1, 0, 0);
+                break;
+            case 7:
+                direction = new Vector3(-0.5f, 0.5f, 0);
+                break;
+            default:
+                direction = Vector3.zero;
+                break;
+        }
+
+        // Bit shift the index of the layer (17) to get a bit mask
+        int layerMaskWall = 1 << 17;
+
+        RaycastHit hit;
+
+        if (Physics.Raycast(transform.position, transform.TransformDirection(direction), out hit, visionDistance, layerMaskWall))
+        {
+            Debug.DrawRay(transform.position, transform.TransformDirection(direction) * hit.distance, Color.yellow);
+            Debug.Log("Did hit at " + hit.distance);
+            return hit.distance;
+        }
+
+        Debug.DrawRay(transform.position, direction * 2, Color.white);
+        Debug.Log("Did not hit");
+
+        return -1;
+    }
+
+    int decideDirection(float[] vision)
+    {
+        decision = brain.output(vision);
+
+        //get the maximum value in the output array and use this as the decision on which direction to go
+        float max = 0;
+        int maxIndex = 0;
+        for (int i = 0; i < decision.Length; i++)
+        {
+            if (max < decision[i])
+            {
+                max = decision[i];
+                maxIndex = i;
+            }
+        }
+
+        return maxIndex;
+    }
+
     void OnCollisionEnter2D(Collision2D col)
     {
         Debug.Log(col.gameObject.tag);
-        if(col.gameObject.tag != posFinishTag)
+        if (col.gameObject.tag != posFinishTag)
         {
             hp--;
             if (hp <= 0)
@@ -77,7 +179,8 @@ public class RDAgent : MonoBehaviour
 
     Vector2 translateIndexToDirection(int index)
     {
-        switch (index) {
+        switch (index)
+        {
             case 1:
                 return Vector2.right;
             case 2:
@@ -101,15 +204,16 @@ public class RDAgent : MonoBehaviour
     /// <summary>
     /// ///////////////////////////////////// PUBLIC METHODS /////////////////////////////////////////////////
     /// </summary>
-
     public void calculateFitness()
     {
         if (finished)
-        {//if the dot reached the goal then the fitness is based on the amount of steps it took to get there
+        {
+            //if the dot reached the goal then the fitness is based on the amount of steps it took to get there
             fitness = 1.0f / 16.0f + 10000.0f / (Mathf.Pow(stepCount, 2));
         }
         else
-        {//if the dot didn't reach the goal then the fitness is based on how close it is to the goal
+        {
+            //if the dot didn't reach the goal then the fitness is based on how close it is to the goal
             float distanceToGoal = Vector3.Distance(transform.position, posFinish);
             fitness = 1.0f / (Mathf.Pow(distanceToGoal, 2));
         }
@@ -125,21 +229,11 @@ public class RDAgent : MonoBehaviour
 
     public void cloneSteps(int[] stepsToClone)
     {
-        //int[] newsteps = new int[stepsToClone.Length];
-
-        //steps = newsteps;
-        ///*steps = (int[])*/stepsToClone.CopyTo(steps, 0);
         System.Array.Copy(stepsToClone, steps, stepsToClone.Length);
     }
 
     public void mutate(float mutationRate)
     {
-        for (int i = 0; i < stepCountMax; i++)
-        {
-            if (Random.Range(0, 1.0f) < mutationRate)
-            {
-                steps[i] = Random.Range(0, 4);
-            }
-        }
+        brain.mutate(mutationRate);
     }
 }

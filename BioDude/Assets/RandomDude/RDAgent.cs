@@ -134,12 +134,9 @@ public class RDAgent : MonoBehaviour
         Debug.DrawRay(transform.position, direction * visionDistance, Color.white);
 
         if (hit.collider != null)
-        {
             Debug.DrawRay(transform.position, direction * hit.distance, Color.red);
-            return hit.distance;
-        }
 
-        return -1;
+        return visionDistance - hit.distance;
     }
 
     int decideDirection(float[] vision)

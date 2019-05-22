@@ -1333,7 +1333,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hp: 1
-  moveForce: 2000
+  moveForce: 500
   visionDistance: 3
   isBest: 0
   dead: 0

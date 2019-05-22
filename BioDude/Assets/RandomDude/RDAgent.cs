@@ -15,7 +15,8 @@ public class RDAgent : MonoBehaviour
     public float moveForce;
     public int visionDistance;
 
-    [HideInInspector] public bool isBest = false;
+    [HideInInspector]
+	public bool isBest = false;
     public bool dead = false;
     public int stepCount { get; private set; }
     public bool finished { get; private set; }
@@ -196,9 +197,8 @@ public class RDAgent : MonoBehaviour
     public void calculateFitness()
     {
         if (finished)
-        {
-            //if the dot reached the goal then the fitness is based on the amount of steps it took to get there
-            fitness = 1.0f / 16.0f + 10000.0f / (Mathf.Pow(stepCount, 2));
+        {//if the dot reached the goal then the fitness is based on the amount of steps it took to get there
+            fitness = 1.0f + 10000.0f / (Mathf.Pow(stepCount, 2));
         }
         else
         {

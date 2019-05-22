@@ -26,8 +26,8 @@ public class OvermindRandom : MonoBehaviour
     private float fitnessSum;
     private int bestAgentIndex;
 
-    private int stepCount;
-
+    private Text outputPanel;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -35,7 +35,9 @@ public class OvermindRandom : MonoBehaviour
         posStart = GameObject.Find("PositionStart").transform;
         agentsFolder = GameObject.Find("Agents").transform;
         agents = new RDAgent[agentCount];
-
+        
+        outputPanel = GameObject.FindGameObjectWithTag("Output").transform.GetComponent<Text>();
+        
         for (int i = 0; i < agentCount; i++)
         {
             agents[i] = Instantiate(agentPrefab, agentsFolder).GetComponent<RDAgent>();
@@ -44,14 +46,8 @@ public class OvermindRandom : MonoBehaviour
         startNewGeneration();
     }
 
-    void FixedUpdate()
-    {
-//        Debug.Log(stepCount++);
-    }
-
     void startNewGeneration()
     {
-        stepCount = 0;
         generation++;
 
         if (generation > 1) // don't need fitness or mutation on first gen
@@ -61,6 +57,8 @@ public class OvermindRandom : MonoBehaviour
                 a.calculateFitness();
                 fitnessSum += a.fitness;
             }
+            
+            UpdateStatusText(generation, bestAgentIndex);
 
             // natural selection
 
@@ -104,9 +102,17 @@ public class OvermindRandom : MonoBehaviour
         agentCountCurrent = agentCount;
         for (int i = 0; i < agentCount; i++) // put agents into starting position
             agents[i].transform.position = posStart.position;
+        
+        Debug.Log(agentCountCurrent);
+    }
 
-
-//        Debug.Log(agentCountCurrent);
+    void UpdateStatusText(int generation, int bestIndex)
+    {
+        string gen = generation.ToString();
+        string best = "\n" + bestIndex;
+        string fit = "\n" + agents[bestIndex].fitness;
+        string step = "\n" + agents[bestIndex].stepCount;
+        outputPanel.text = gen + best + fit + step;
     }
 
     void setBestDude()
@@ -120,8 +126,9 @@ public class OvermindRandom : MonoBehaviour
                 bestAgentIndex = i;
             }
         }
-        if(agents[bestAgentIndex].finished) // if he finished set new maxSteps
-            maxSteps = agents[bestAgentIndex].stepCount;
+        if (agents[bestAgentIndex].finished) // if he finished set new maxSteps
+//            maxSteps = agents[bestAgentIndex].stepCount;
+            maxSteps = agents[bestAgentIndex].stepCount < 1 ? 1 : agents[bestAgentIndex].stepCount;
     }
 
     int getRandParent()

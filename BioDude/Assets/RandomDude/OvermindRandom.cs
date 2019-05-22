@@ -71,6 +71,7 @@ public class OvermindRandom : MonoBehaviour
                 //parents[i] = getRandParent();
                 //getRandParent(ref parents[i]);
                 parents[i] = new int[maxSteps];
+                Debug.Log("maxsteps: " + maxSteps);
                 int index = getRandParent();
                 System.Array.Copy(agents[index].steps, parents[i], maxSteps);
                 Debug.Log("agent: " + agents[index].steps[0]);
@@ -121,7 +122,8 @@ public class OvermindRandom : MonoBehaviour
             }
         }
         if (agents[bestAgentIndex].finished) // if he finished set new maxSteps
-            maxSteps = agents[bestAgentIndex].stepCount;
+//            maxSteps = agents[bestAgentIndex].stepCount;
+            maxSteps = agents[bestAgentIndex].stepCount < 1 ? 1 : agents[bestAgentIndex].stepCount;
     }
 
     int getRandParent()

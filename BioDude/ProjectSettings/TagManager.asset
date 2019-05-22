@@ -20,6 +20,7 @@ TagManager:
   - Overmind
   - PositionStart
   - PositionFinish
+  - Output
   layers:
   - Default
   - TransparentFX

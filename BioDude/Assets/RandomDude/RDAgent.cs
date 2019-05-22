@@ -73,11 +73,25 @@ public class RDAgent : MonoBehaviour
 
     float[] look()
     {
+        // Bit shift the index of the layer (17) to get a bit mask
+        int layerMaskWall = 1 << 17;
         float[] vision = new float[9];
 
         for (int i = 0; i < 8; i++)
         {
-            vision[i] = lookInDirection(i);
+            int angle = 45 * i;
+
+            Vector3 direction = Quaternion.Euler(0, 0, angle) * Vector3.up;
+            direction = new Vector2(direction.x, direction.y);
+            
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, visionDistance, layerMaskWall);
+
+            Debug.DrawRay(transform.position, direction * visionDistance, Color.white);
+
+            if (hit.collider != null)
+                Debug.DrawRay(transform.position, direction * hit.distance, Color.red);
+
+            vision[i] = visionDistance - hit.distance;
         }
 
         vision[8] = Vector3.Distance(transform.position, posFinish);
@@ -86,58 +100,26 @@ public class RDAgent : MonoBehaviour
         return vision;
     }
 
-    // casts ray in direction by index and returns distance to wall if in vision distance or -1 otherwise.
-    float lookInDirection(int directionIndex)
-    {
-        int angle;
-
-        switch (directionIndex)
-        {
-            case 0:
-                angle = 0;
-                break;
-            case 1:
-                angle = 45;
-                break;
-            case 2:
-                angle = 90;
-                break;
-            case 3:
-                angle = 135;
-                break;
-            case 4:
-                angle = 180;
-                break;
-            case 5:
-                angle = 225;
-                break;
-            case 6:
-                angle = 270;
-                break;
-            case 7:
-                angle = 315;
-                break;
-            default:
-                angle = 0;
-                break;
-        }
-
-        Vector3 direction = Quaternion.Euler(0, 0, angle) * new Vector3(0, 1);
-        direction = new Vector2(direction.x, direction.y);
-
-        // Bit shift the index of the layer (17) to get a bit mask
-        int layerMaskWall = 1 << 17;
-//        layerMaskWall = ~layerMaskWall;
-
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, visionDistance, layerMaskWall);
-
-        Debug.DrawRay(transform.position, direction * visionDistance, Color.white);
-
-        if (hit.collider != null)
-            Debug.DrawRay(transform.position, direction * hit.distance, Color.red);
-
-        return visionDistance - hit.distance;
-    }
+//    // casts ray in direction by index and returns distance to wall if in vision distance or -1 otherwise.
+//    float lookInDirection(int directionIndex)
+//    {
+//        int angle = 45 * directionIndex;
+//
+//        Vector3 direction = Quaternion.Euler(0, 0, angle) * new Vector3(0, 1);
+//        direction = new Vector2(direction.x, direction.y);
+//
+//        // Bit shift the index of the layer (17) to get a bit mask
+//        int layerMaskWall = 1 << 17;
+//
+//        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, visionDistance, layerMaskWall);
+//
+//        Debug.DrawRay(transform.position, direction * visionDistance, Color.white);
+//
+//        if (hit.collider != null)
+//            Debug.DrawRay(transform.position, direction * hit.distance, Color.red);
+//
+//        return visionDistance - hit.distance;
+//    }
 
     int decideDirection(float[] vision)
     {

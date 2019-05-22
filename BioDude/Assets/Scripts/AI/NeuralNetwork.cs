@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+
 // ReSharper disable InconsistentNaming
 // ReSharper disable SuggestVarOrType_BuiltInTypes
 // ReSharper disable CheckNamespace
@@ -10,6 +12,7 @@
 
 public class NeuralNetwork
 {
+    public Text outputPanel;
     int iNodes;
 //    int hNodes;
     int oNodes;
@@ -21,6 +24,8 @@ public class NeuralNetwork
 
     public NeuralNetwork(int inputs, int outputCount)
     {
+        outputPanel = GameObject.FindGameObjectWithTag("Output").transform.GetComponent<Text>();
+
         iNodes = inputs;
         oNodes = outputCount;
 //        hNodes = hiddenCount;
@@ -43,13 +48,11 @@ public class NeuralNetwork
     public float[] output(float[] inputsArr)
     {
         //convert array to matrix
-        //Note woh has nothing to do with it its just a function in the Matrix class
         Matrix inputs = Matrix.singleColumnMatrixFromArray(inputsArr);
 
         //add bias 
         Matrix inputsBias = inputs.addBias();
-
-
+        
         //-----------------------calculate the guessed output
         
         //apply weights
@@ -57,17 +60,9 @@ public class NeuralNetwork
         //pass through activation function(sigmoid)
         Matrix outputs = outputInputs.activate();
 
+        outputPanel.text = outputs.output();
+
         //convert to an array and return
         return outputs.toArray();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
     }
 }

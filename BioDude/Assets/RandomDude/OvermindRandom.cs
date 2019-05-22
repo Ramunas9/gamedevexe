@@ -63,7 +63,10 @@ public class OvermindRandom : MonoBehaviour
             }
 
             // natural selection
-            setBestDot(); // find best agent and place it into the next gen
+
+            RDAgent[] newAgents = new RDAgent[agentCount]; //next generation of agents
+
+            setBestDude(); // find best agent and place it into the next gen
             if(bestAgentIndex != 0) // put the best agent in first position
             {
                 RDAgent temp = agents[0];
@@ -106,7 +109,7 @@ public class OvermindRandom : MonoBehaviour
 //        Debug.Log(agentCountCurrent);
     }
 
-    void setBestDot()
+    void setBestDude()
     {
         double max = 0;
         for (int i = 0; i < agentCount; i++)
@@ -118,7 +121,7 @@ public class OvermindRandom : MonoBehaviour
             }
         }
         if(agents[bestAgentIndex].finished) // if he finished set new maxSteps
-            maxSteps = agents[0].stepCount;
+            maxSteps = agents[bestAgentIndex].stepCount;
     }
 
     int getRandParent()

@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using Random = System.Random;
+
 // ReSharper disable InconsistentNaming
 // ReSharper disable SuggestVarOrType_BuiltInTypes
 // ReSharper disable CheckNamespace
@@ -155,30 +156,20 @@ public class Matrix
         return arr;
     }
 
-    public void output()
+    public string output()
     {
+        string line = "";
+
         for (int i = 0; i < rows; i++)
         {
-            string line = "";
             for (int j = 0; j < cols; j++)
             {
                 line += (matrix[i, j] + "  ");
             }
 
-            Debug.Log("/" + line);
+            line += "\n";
         }
 
-
-        Debug.Log("----------------------------------------");
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
+        return line;
     }
 }

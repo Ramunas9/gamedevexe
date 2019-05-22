@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class OvermindRandom : MonoBehaviour
@@ -19,6 +20,8 @@ public class OvermindRandom : MonoBehaviour
     private int agentCountCurrent;
     private float fitnessSum = 0;
     private int bestAgentIndex = 0;
+
+    private Text outputPanel;
     
     // Start is called before the first frame update
     void Start()
@@ -27,7 +30,9 @@ public class OvermindRandom : MonoBehaviour
         posStart = GameObject.Find("PositionStart").transform;
         agentsFolder = GameObject.Find("Agents").transform;
         agents = new RDAgent[agentCount];
-
+        
+        outputPanel = GameObject.FindGameObjectWithTag("Output").transform.GetComponent<Text>();
+        
         for (int i = 0; i < agentCount; i++)
         {
             agents[i] = Instantiate(agentPrefab, agentsFolder).GetComponent<RDAgent>();
@@ -47,6 +52,8 @@ public class OvermindRandom : MonoBehaviour
                 a.calculateFitness();
                 fitnessSum += a.fitness;
             }
+            
+            UpdateStatusText(generation, bestAgentIndex);
 
             // natural selection
             setBestDot(); // find best agent and place it into the next gen
@@ -87,14 +94,17 @@ public class OvermindRandom : MonoBehaviour
         agentCountCurrent = agentCount;
         for (int i = 0; i < agentCount; i++) // put agents into starting position
             agents[i].transform.position = posStart.position;
-
-
+        
         Debug.Log(agentCountCurrent);
     }
 
-    void UpdateStatusText(int generation, int steps)
+    void UpdateStatusText(int generation, int bestIndex)
     {
-
+        string gen = generation.ToString();
+        string best = "\n" + bestIndex;
+        string fit = "\n" + agents[bestIndex].fitness;
+        string step = "\n" + agents[bestIndex].stepCount;
+        outputPanel.text = gen + best + fit + step;
     }
 
     void setBestDot()

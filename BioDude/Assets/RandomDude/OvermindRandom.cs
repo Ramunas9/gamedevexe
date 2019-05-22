@@ -19,9 +19,7 @@ public class OvermindRandom : MonoBehaviour
     private int agentCountCurrent;
     private float fitnessSum = 0;
     private int bestAgentIndex = 0;
-
-    private int stepCount = 0;
-
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -38,14 +36,8 @@ public class OvermindRandom : MonoBehaviour
         startNewGeneration();
     }
 
-    void FixedUpdate()
-    {
-        Debug.Log(stepCount++);
-    }
-
     void startNewGeneration()
     {
-        stepCount = 0;
         generation++;
 
         if (generation > 1) // don't need fitness or mutation on first gen
@@ -100,19 +92,26 @@ public class OvermindRandom : MonoBehaviour
         Debug.Log(agentCountCurrent);
     }
 
+    void UpdateStatusText(int generation, int steps)
+    {
+
+    }
+
     void setBestDot()
     {
         double max = 0;
         for (int i = 0; i < agentCount; i++)
         {
+            Debug.Log(i + " -- " + agents[i].stepCount  + " -- " + agents[i].fitness  + " -- " + agents[i].finished);
+        
             if(agents[i].fitness > max)
             {
                 max = agents[i].fitness;
                 bestAgentIndex = i;
             }
         }
-        if(agents[bestAgentIndex].finished) // if he finished set new maxSteps
-            maxSteps = agents[0].stepCount;
+        if (agents[bestAgentIndex].finished) // if he finished set new maxSteps
+            maxSteps = agents[bestAgentIndex].stepCount;
     }
 
     int getRandParent()

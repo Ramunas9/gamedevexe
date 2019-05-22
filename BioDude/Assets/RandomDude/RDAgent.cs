@@ -106,7 +106,7 @@ public class RDAgent : MonoBehaviour
     {
         if (finished)
         {//if the dot reached the goal then the fitness is based on the amount of steps it took to get there
-            fitness = 1.0f / 16.0f + 10000.0f / (Mathf.Pow(stepCount, 2));
+            fitness = 1.0f + 10000.0f / (Mathf.Pow(stepCount, 2));
         }
         else
         {//if the dot didn't reach the goal then the fitness is based on how close it is to the goal
@@ -119,6 +119,7 @@ public class RDAgent : MonoBehaviour
     {
         stepCount = 0;
         stepCountMax = steps.Length;
+//        stepCountMax = overmind.maxSteps;
         dead = false;
         finished = false;
     }

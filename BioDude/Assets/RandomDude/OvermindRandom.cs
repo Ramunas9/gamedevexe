@@ -1,4 +1,7 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using Random = UnityEngine.Random;
+
 // ReSharper disable InconsistentNaming
 // ReSharper disable SuggestVarOrType_BuiltInTypes
 // ReSharper disable CheckNamespace
@@ -7,7 +10,6 @@
 // ReSharper disable ArrangeTypeMemberModifiers
 // ReSharper disable SuggestBaseTypeForParameter
 // ReSharper disable MemberCanBeMadeStatic.Local
-
 
 public class OvermindRandom : MonoBehaviour
 {
@@ -27,7 +29,7 @@ public class OvermindRandom : MonoBehaviour
     private int bestAgentIndex;
 
     private Text outputPanel;
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,9 +37,9 @@ public class OvermindRandom : MonoBehaviour
         posStart = GameObject.Find("PositionStart").transform;
         agentsFolder = GameObject.Find("Agents").transform;
         agents = new RDAgent[agentCount];
-        
+
         outputPanel = GameObject.FindGameObjectWithTag("Output").transform.GetComponent<Text>();
-        
+
         for (int i = 0; i < agentCount; i++)
         {
             agents[i] = Instantiate(agentPrefab, agentsFolder).GetComponent<RDAgent>();
@@ -57,19 +59,18 @@ public class OvermindRandom : MonoBehaviour
                 a.calculateFitness();
                 fitnessSum += a.fitness;
             }
-            
+
             UpdateStatusText(generation, bestAgentIndex);
 
             // natural selection
 
-            RDAgent[] newAgents = new RDAgent[agentCount]; //next generation of agents
+//            RDAgent[] newAgents = new RDAgent[agentCount]; //next generation of agents
 
             setBestDude(); // find best agent and place it into the next gen
-            if(bestAgentIndex != 0) // put the best agent in first position
+//            newAgents[0] = 
+            if (bestAgentIndex != 0) // put the best agent in first position
             {
-                RDAgent temp = agents[0];
-                agents[0] = agents[bestAgentIndex];
-                agents[bestAgentIndex] = temp;
+                Swap(agents[0], agents[bestAgentIndex]);
             }
 
             // create parents off unmodified agents
@@ -80,16 +81,16 @@ public class OvermindRandom : MonoBehaviour
                 //getRandParent(ref parents[i]);
                 parents[i] = new int[maxSteps];
                 int index = getRandParent();
-                System.Array.Copy(agents[index].steps, parents[i], maxSteps);
+//                System.Array.Copy(agents[index].steps, parents[i], maxSteps);
 //                Debug.Log("agent: " + agents[index].steps[0]);
 //                Debug.Log("parent: " + parents[i][0]);
             }
 //            Debug.Log("parent AFTER: " + parents[1][0]);
 
             // get parent steps, mutate them and assign to agent
-            for (int i = 1; i < agentCount; i++) 
+            for (int i = 1; i < agentCount; i++)
             {
-                agents[i].cloneSteps(parents[i]);
+//                agents[i].cloneSteps(parents[i]);
                 agents[i].mutate(mutationRate);
             }
 
@@ -102,7 +103,7 @@ public class OvermindRandom : MonoBehaviour
         agentCountCurrent = agentCount;
         for (int i = 0; i < agentCount; i++) // put agents into starting position
             agents[i].transform.position = posStart.position;
-        
+
         Debug.Log(agentCountCurrent);
     }
 
@@ -120,12 +121,13 @@ public class OvermindRandom : MonoBehaviour
         double max = 0;
         for (int i = 0; i < agentCount; i++)
         {
-            if(agents[i].fitness > max)
+            if (agents[i].fitness > max)
             {
                 max = agents[i].fitness;
                 bestAgentIndex = i;
             }
         }
+
         if (agents[bestAgentIndex].finished) // if he finished set new maxSteps
 //            maxSteps = agents[bestAgentIndex].stepCount;
             maxSteps = agents[bestAgentIndex].stepCount < 1 ? 1 : agents[bestAgentIndex].stepCount;
@@ -139,7 +141,7 @@ public class OvermindRandom : MonoBehaviour
         for (int i = 0; i < agentCount; i++)
         {
             sum += agents[i].fitness;
-            if(sum > randParent)
+            if (sum > randParent)
             {
                 // clone parent steps array
                 //agents[i].steps.CopyTo(newsteps, 0); // doesnt work wtf
@@ -148,8 +150,27 @@ public class OvermindRandom : MonoBehaviour
                 return i;
             }
         }
+
         Debug.Log("YOU CAN'T REACH THIS");
         return 0;
+    }
+
+    private void Swap(RDAgent source, RDAgent destination)
+    {
+        int hp = source.hp;
+        int stepCount = source.stepCount;
+        NeuralNetwork brain = source.brain.clone();
+        float fitness = source.fitness;
+
+        source.hp = destination.hp;
+        source.stepCount = destination.stepCount;
+        source.brain = destination.brain.clone();
+        source.fitness = destination.fitness;
+
+        destination.hp = hp;
+        destination.stepCount = stepCount;
+        destination.brain = brain;
+        destination.fitness = fitness;
     }
 
     /// <summary>
@@ -158,7 +179,7 @@ public class OvermindRandom : MonoBehaviour
     public void agentDone()
     {
         agentCountCurrent--;
-        if(agentCountCurrent <= 0)
+        if (agentCountCurrent <= 0)
         {
             startNewGeneration();
         }

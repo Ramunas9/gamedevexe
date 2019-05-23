@@ -35,6 +35,18 @@ public class NeuralNetwork
         woi.randomize();
     }
 
+    // for cloning
+    private NeuralNetwork(int inputs, int outputCount, Matrix weights)
+    {
+        outputPanel = GameObject.FindGameObjectWithTag("Output").transform.GetComponent<Text>();
+
+        iNodes = inputs;
+        oNodes = outputCount;
+//        hNodes = hiddenCount;
+
+        woi = weights;
+    }
+
     //mutation function for genetic algorithm
     public void mutate(float mr)
     {
@@ -64,5 +76,11 @@ public class NeuralNetwork
 
         //convert to an array and return
         return outputs.toArray();
+    }
+
+    public NeuralNetwork clone()
+    {
+        return new NeuralNetwork(iNodes, oNodes, woi);
+
     }
 }

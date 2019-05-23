@@ -15,19 +15,16 @@ public class RDAgent : MonoBehaviour
     public float moveForce;
     public int visionDistance;
 
-    [HideInInspector]
-	public bool isBest = false;
-    public bool dead = false;
-    public int stepCount { get; private set; }
+    [HideInInspector] public bool dead = false;
+    public int stepCount { get; set; }
     public bool finished { get; private set; }
-    public int[] steps { get; private set; }
 
     private OvermindRandom overmind;
-    private NeuralNetwork brain;
+    public NeuralNetwork brain;
 
     private float[] decision;
 
-    public float fitness { get; private set; }
+    public float fitness { get; set; }
     private int stepCountMax = 0;
 
     private string posFinishTag = "PositionFinish";
@@ -42,8 +39,6 @@ public class RDAgent : MonoBehaviour
         posFinish = GameObject.FindGameObjectWithTag(posFinishTag).transform.position;
         stepCount = 0;
         stepCountMax = overmind.maxSteps;
-        steps = new int[stepCountMax];
-        randomizeSteps();
 
         brain = new NeuralNetwork(9, 4);
 
@@ -84,7 +79,7 @@ public class RDAgent : MonoBehaviour
 
             Vector3 direction = Quaternion.Euler(0, 0, angle) * Vector3.up;
             direction = new Vector2(direction.x, direction.y);
-            
+
             RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, visionDistance, layerMaskWall);
 
             Debug.DrawRay(transform.position, direction * visionDistance, Color.white);
@@ -100,27 +95,6 @@ public class RDAgent : MonoBehaviour
 
         return vision;
     }
-
-//    // casts ray in direction by index and returns distance to wall if in vision distance or -1 otherwise.
-//    float lookInDirection(int directionIndex)
-//    {
-//        int angle = 45 * directionIndex;
-//
-//        Vector3 direction = Quaternion.Euler(0, 0, angle) * new Vector3(0, 1);
-//        direction = new Vector2(direction.x, direction.y);
-//
-//        // Bit shift the index of the layer (17) to get a bit mask
-//        int layerMaskWall = 1 << 17;
-//
-//        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, visionDistance, layerMaskWall);
-//
-//        Debug.DrawRay(transform.position, direction * visionDistance, Color.white);
-//
-//        if (hit.collider != null)
-//            Debug.DrawRay(transform.position, direction * hit.distance, Color.red);
-//
-//        return visionDistance - hit.distance;
-//    }
 
     int decideDirection(float[] vision)
     {
@@ -182,22 +156,14 @@ public class RDAgent : MonoBehaviour
         }
     }
 
-    void randomizeSteps()
-    {
-        for (int i = 0; i < stepCountMax; i++)
-        {
-            steps[i] = Random.Range(0, 4); // get random direction index
-        }
-    }
-
-
     /// <summary>
     /// ///////////////////////////////////// PUBLIC METHODS /////////////////////////////////////////////////
     /// </summary>
     public void calculateFitness()
     {
         if (finished)
-        {//if the dot reached the goal then the fitness is based on the amount of steps it took to get there
+        {
+            //if the dot reached the goal then the fitness is based on the amount of steps it took to get there
             fitness = 1.0f + 10000.0f / (Mathf.Pow(stepCount, 2));
         }
         else
@@ -210,15 +176,12 @@ public class RDAgent : MonoBehaviour
 
     public void Revive()
     {
+//        hp = transform.GetComponent<RDAgent>().hp;
+        hp = 1;
         stepCount = 0;
-        stepCountMax = steps.Length;
+//        stepCountMax = steps.Length;
         dead = false;
         finished = false;
-    }
-
-    public void cloneSteps(int[] stepsToClone)
-    {
-        System.Array.Copy(stepsToClone, steps, stepsToClone.Length);
     }
 
     public void mutate(float mutationRate)

@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System;
 using UnityEngine;
 
 // ReSharper disable InconsistentNaming
@@ -101,7 +101,7 @@ public class RDAgent : MonoBehaviour
 
             RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, visionDistance, layerMaskWall);
 
-            Vector3 linePosStaticEnd = transform.position + (direction * visionDistance);
+            Vector3 linePosStaticEnd = transform.position + direction * visionDistance;
 
             if (hit.collider != null)
                 linePosVisionEnd = hit.point;
@@ -159,11 +159,11 @@ public class RDAgent : MonoBehaviour
             if (hp > 0) return;
 
             foreach (var line in staticLines)
-                line.SetPositions(new []{Vector3.zero, Vector3.zero});
+                line.SetPositions(new[] {Vector3.zero, Vector3.zero});
             foreach (var line in visionLines)
-                line.SetPositions(new []{Vector3.zero, Vector3.zero});
+                line.SetPositions(new[] {Vector3.zero, Vector3.zero});
             foreach (var line in decisionLines)
-                line.SetPositions(new []{Vector3.zero, Vector3.zero});
+                line.SetPositions(new[] {Vector3.zero, Vector3.zero});
 
             dead = true;
             rb.velocity = Vector2.zero;
@@ -200,13 +200,20 @@ public class RDAgent : MonoBehaviour
         if (finished)
         {
             //if the dot reached the goal then the fitness is based on the amount of steps it took to get there
-            fitness = 1.0f + 10000.0f / (Mathf.Pow(stepCount, 2));
+            fitness = 1.0f + 10000.0f / Mathf.Pow(stepCount, 2);
         }
         else
         {
             //if the dot didn't reach the goal then the fitness is based on how close it is to the goal
             float distanceToGoal = Vector3.Distance(transform.position, posFinish);
-            fitness = distanceToGoal <= 0 ? 1 : 1.0f / (Mathf.Pow(distanceToGoal, 2));
+            fitness = distanceToGoal <= 0 ? 1 : 1.0f / Mathf.Pow(distanceToGoal, 2);
+
+            if (distanceToGoal <= 0 || fitness >= Mathf.Infinity)
+            {
+                Debug.Log(distanceToGoal + " FUCKED UP " + fitness);
+            }
+
+//            fitness = fitness >= Single.PositiveInfinity ? 0 : fitness;
         }
     }
 

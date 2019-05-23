@@ -1,6 +1,5 @@
 ﻿using System;
-using UnityEngine;
-using Random = System.Random;
+using Random = UnityEngine.Random;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable SuggestVarOrType_BuiltInTypes
@@ -16,26 +15,19 @@ public class Matrix
     private int rows;
     private int cols;
     private float[,] matrix;
-    private Random rand;
 
     public Matrix(int r, int c)
     {
         rows = r;
         cols = c;
         matrix = new float[rows, cols];
-
-        rand = new Random();
     }
 
     public void randomize()
     {
         for (int i = 0; i < rows; i++)
-        {
-            for (int j = 0; j < cols; j++)
-            {
-                matrix[i, j] = (float) (rand.NextDouble() * 2 - 1);
-            }
-        }
+        for (int j = 0; j < cols; j++)
+            matrix[i, j] = Random.Range(-1f, 1f);
     }
 
     public Matrix dot(Matrix n)
@@ -43,22 +35,16 @@ public class Matrix
         Matrix result = new Matrix(rows, n.cols);
 
         if (cols == n.rows)
-        {
             //for each spot in the new matrix
             for (int i = 0; i < rows; i++)
+            for (int j = 0; j < n.cols; j++)
             {
-                for (int j = 0; j < n.cols; j++)
-                {
-                    float sum = 0;
-                    for (int k = 0; k < cols; k++)
-                    {
-                        sum += matrix[i, k] * n.matrix[k, j];
-                    }
+                float sum = 0;
+                for (int k = 0; k < cols; k++)
+                    sum += matrix[i, k] * n.matrix[k, j];
 
-                    result.matrix[i, j] = sum;
-                }
+                result.matrix[i, j] = sum;
             }
-        }
 
         return result;
     }
@@ -68,28 +54,12 @@ public class Matrix
     {
         //for each element in the matrix
         for (int i = 0; i < rows; i++)
+        for (int j = 0; j < cols; j++)
         {
-            for (int j = 0; j < cols; j++)
-            {
-                float randomNextDouble = (float) (rand.NextDouble() * 2 - 1);
-                if (randomNextDouble < mutationRate)
-                {
-                    //if chosen to be mutated
-//                    matrix[i, j] += randomGaussian()/5;//add a random value to it(can be negative)
-                    matrix[i, j] += (float) (rand.NextDouble() * 2 - 1); //add a random value to it(can be negative)
-
-                    //set the boundaries to 1 and -1
-                    if (matrix[i, j] > 1)
-                    {
-                        matrix[i, j] = 1;
-                    }
-
-                    if (matrix[i, j] < -1)
-                    {
-                        matrix[i, j] = -1;
-                    }
-                }
-            }
+            float rand = Random.Range(0f, 1f);
+            if (rand < mutationRate)
+                //if chosen to be mutated
+                matrix[i, j] += Random.Range(-1f, 1f);
         }
     }
 
@@ -133,7 +103,26 @@ public class Matrix
         return n;
     }
 
-//---------------------------------------------------------------------------------------------------------------------------------------------------------    
+    public Matrix crossover(Matrix partner)
+    {
+        Matrix child = new Matrix(rows, cols);
+
+        //pick a random point in the matrix
+        int randC = Random.Range(0, cols);
+        int randR = Random.Range(0, rows);
+
+        for (int i = 0; i < rows; i++)
+        for (int j = 0; j < cols; j++)
+            if (i < randR || i == randR && j <= randC)
+                //if before the random point then copy from this matrix
+                child.matrix[i, j] = matrix[i, j];
+            else
+                //if after the random point then copy from the partner matrix
+                child.matrix[i, j] = partner.matrix[i, j];
+
+        return child;
+    }
+
     //sigmoid activation function
     float sigmoid(float x)
     {
@@ -164,7 +153,7 @@ public class Matrix
         {
             for (int j = 0; j < cols; j++)
             {
-                line += (matrix[i, j] + "  ");
+                line += matrix[i, j] + "  ";
             }
 
             line += "\n";

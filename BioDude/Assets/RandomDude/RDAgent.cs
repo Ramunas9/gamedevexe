@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable SuggestVarOrType_BuiltInTypes
@@ -31,6 +32,14 @@ public class RDAgent : MonoBehaviour
     private Vector3 posFinish;
     private Rigidbody2D rb;
 
+    private LineRenderer[] staticLines;
+    private LineRenderer[] visionLines;
+    private LineRenderer[] decisionLines;
+
+    private const float staticLinesZ = -9.1f;
+    private const float visionLinesZ = -9.4f;
+    private const float decisionLinesZ = -9.3f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -40,7 +49,11 @@ public class RDAgent : MonoBehaviour
         stepCount = 0;
         stepCountMax = overmind.maxSteps;
 
-        brain = new NeuralNetwork(9, 4);
+        brain = new NeuralNetwork(9, 0, 4);
+
+        staticLines = transform.GetChild(1).GetComponentsInChildren<LineRenderer>();
+        visionLines = transform.GetChild(2).GetComponentsInChildren<LineRenderer>();
+        decisionLines = transform.GetChild(3).GetComponentsInChildren<LineRenderer>();
 
         Revive();
     }
@@ -73,6 +86,12 @@ public class RDAgent : MonoBehaviour
         int layerMaskWall = 1 << 17;
         float[] vision = new float[9];
 
+        Vector3 linePosStaticStart = transform.position;
+        Vector3 linePosVisionStart = transform.position;
+        Vector3 linePosVisionEnd = transform.position;
+        linePosStaticStart.z = staticLinesZ;
+        linePosVisionStart.z = visionLinesZ;
+
         for (int i = 0; i < 8; i++)
         {
             int angle = 45 * i;
@@ -82,16 +101,21 @@ public class RDAgent : MonoBehaviour
 
             RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, visionDistance, layerMaskWall);
 
-            Debug.DrawRay(transform.position, direction * visionDistance, Color.white);
+            Vector3 linePosStaticEnd = transform.position + (direction * visionDistance);
 
             if (hit.collider != null)
-                Debug.DrawRay(transform.position, direction * hit.distance, Color.red);
+                linePosVisionEnd = hit.point;
+
+            linePosStaticEnd.z = staticLinesZ;
+            linePosVisionEnd.z = visionLinesZ;
+            staticLines[i].SetPositions(new[] {linePosStaticStart, linePosStaticEnd});
+            visionLines[i].SetPositions(new[] {linePosVisionStart, linePosVisionEnd});
 
             vision[i] = visionDistance - hit.distance;
         }
 
         vision[8] = Vector3.Distance(transform.position, posFinish);
-        Debug.DrawLine(transform.position, posFinish, Color.blue);
+        visionLines[8].SetPositions(new[] {linePosVisionStart, new Vector3(posFinish.x, posFinish.y, visionLinesZ)});
 
         return vision;
     }
@@ -112,10 +136,15 @@ public class RDAgent : MonoBehaviour
             }
         }
 
+        Vector3 linePosDecisionStart = transform.position;
+        linePosDecisionStart.z = decisionLinesZ;
         for (int i = 0; i < decision.Length; i++)
         {
-            Debug.DrawRay(transform.position, translateIndexToDirection(i) * decision[i] * visionDistance / 2,
-                maxIndex == i ? Color.green : Color.yellow);
+//            decisionLines[i].material.color = maxIndex == i ? Color.green : Color.yellow;
+
+            var end = translateIndexToDirection(i) * decision[i] * visionDistance;
+            Vector3 linePosDecisionEnd = transform.position + new Vector3(end.x, end.y, decisionLinesZ);
+            decisionLines[i].SetPositions(new[] {linePosDecisionStart, linePosDecisionEnd});
         }
 
         return maxIndex;
@@ -127,16 +156,23 @@ public class RDAgent : MonoBehaviour
         if (col.gameObject.tag != posFinishTag)
         {
             hp--;
-            if (hp <= 0)
-            {
-                dead = true;
-                overmind.agentDone();
-            }
+            if (hp > 0) return;
+
+            foreach (var line in staticLines)
+                line.SetPositions(new []{Vector3.zero, Vector3.zero});
+            foreach (var line in visionLines)
+                line.SetPositions(new []{Vector3.zero, Vector3.zero});
+            foreach (var line in decisionLines)
+                line.SetPositions(new []{Vector3.zero, Vector3.zero});
+
+            dead = true;
+            rb.velocity = Vector2.zero;
+            overmind.agentDone();
         }
         else
         {
             finished = true;
-            calculateFitness();
+//            calculateFitness();
             overmind.agentDone();
         }
     }
@@ -170,14 +206,13 @@ public class RDAgent : MonoBehaviour
         {
             //if the dot didn't reach the goal then the fitness is based on how close it is to the goal
             float distanceToGoal = Vector3.Distance(transform.position, posFinish);
-            fitness = 1.0f / (Mathf.Pow(distanceToGoal, 2));
+            fitness = distanceToGoal <= 0 ? 1 : 1.0f / (Mathf.Pow(distanceToGoal, 2));
         }
     }
 
     public void Revive()
     {
-//        hp = transform.GetComponent<RDAgent>().hp;
-        hp = 1;
+        hp = transform.GetComponent<RDAgent>().hp;
         stepCount = 0;
 //        stepCountMax = steps.Length;
         dead = false;

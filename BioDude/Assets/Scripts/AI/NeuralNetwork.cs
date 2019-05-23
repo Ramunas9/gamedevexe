@@ -12,9 +12,9 @@ using UnityEngine.UI;
 
 public class NeuralNetwork
 {
-    public Text outputPanel;
+    public Text outputPanelNN;
     int iNodes;
-//    int hNodes;
+    int hNodes;
     int oNodes;
 
     // Matrix whi; //matrix containing weights between the input nodes and the hidden nodes
@@ -22,13 +22,13 @@ public class NeuralNetwork
     // Matrix woh; //matrix containing weights between the second hidden layer nodes and the output nodes
     Matrix woi; //matrix containing weights between the input and the output nodes
 
-    public NeuralNetwork(int inputs, int outputCount)
+    public NeuralNetwork(int inputCount, int hiddenCount, int outputCount)
     {
-        outputPanel = GameObject.FindGameObjectWithTag("Output").transform.GetComponent<Text>();
+        outputPanelNN = GameObject.FindGameObjectWithTag("OutputNN").transform.GetComponent<Text>();
 
-        iNodes = inputs;
+        iNodes = inputCount;
+        hNodes = hiddenCount;
         oNodes = outputCount;
-//        hNodes = hiddenCount;
 
         woi = new Matrix(oNodes, iNodes + 1);
 
@@ -38,13 +38,18 @@ public class NeuralNetwork
     // for cloning
     private NeuralNetwork(int inputs, int outputCount, Matrix weights)
     {
-        outputPanel = GameObject.FindGameObjectWithTag("Output").transform.GetComponent<Text>();
+        outputPanelNN = GameObject.FindGameObjectWithTag("OutputNN").transform.GetComponent<Text>();
 
         iNodes = inputs;
         oNodes = outputCount;
 //        hNodes = hiddenCount;
 
         woi = weights;
+    }
+
+    public NeuralNetwork crossover(NeuralNetwork partner)
+    {
+        return new NeuralNetwork(iNodes, hNodes, oNodes) {woi = woi.crossover(partner.woi)};
     }
 
     //mutation function for genetic algorithm
@@ -72,7 +77,7 @@ public class NeuralNetwork
         //pass through activation function(sigmoid)
         Matrix outputs = outputInputs.activate();
 
-        outputPanel.text = outputs.output();
+        outputPanelNN.text = outputs.output();
 
         //convert to an array and return
         return outputs.toArray();

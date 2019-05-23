@@ -21,6 +21,7 @@ TagManager:
   - PositionStart
   - PositionFinish
   - Output
+  - OutputNN
   layers:
   - Default
   - TransparentFX

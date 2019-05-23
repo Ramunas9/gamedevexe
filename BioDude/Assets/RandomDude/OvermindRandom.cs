@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -25,7 +26,6 @@ public class OvermindRandom : MonoBehaviour
     private int generation;
 
     private int agentCountCurrent;
-    private float fitnessSum;
     private int bestAgentIndex;
 
     private Text outputPanel;
@@ -54,6 +54,7 @@ public class OvermindRandom : MonoBehaviour
 
         if (generation > 1) // don't need fitness or mutation on first gen
         {
+            float fitnessSum = 0;
             foreach (RDAgent a in agents)
             {
                 a.calculateFitness();
@@ -62,37 +63,26 @@ public class OvermindRandom : MonoBehaviour
 
             UpdateStatusText(generation, bestAgentIndex);
 
+            NeuralNetwork[] newBrains = new NeuralNetwork[agentCount]; //next generation of agents
+
             // natural selection
-
-//            RDAgent[] newAgents = new RDAgent[agentCount]; //next generation of agents
-
             setBestDude(); // find best agent and place it into the next gen
-//            newAgents[0] = 
-            if (bestAgentIndex != 0) // put the best agent in first position
-            {
-                Swap(agents[0], agents[bestAgentIndex]);
-            }
+            newBrains[0] = agents[bestAgentIndex].brain.clone();
 
-            // create parents off unmodified agents
-            int[][] parents = new int[agentCount][];
             for (int i = 1; i < agentCount; i++)
             {
-                //parents[i] = getRandParent();
-                //getRandParent(ref parents[i]);
-                parents[i] = new int[maxSteps];
-                int index = getRandParent();
-//                System.Array.Copy(agents[index].steps, parents[i], maxSteps);
-//                Debug.Log("agent: " + agents[index].steps[0]);
-//                Debug.Log("parent: " + parents[i][0]);
-            }
-//            Debug.Log("parent AFTER: " + parents[1][0]);
+                NeuralNetwork parent1 = selectRandomParent(fitnessSum);
+                NeuralNetwork parent2 = selectRandomParent(fitnessSum);
 
-            // get parent steps, mutate them and assign to agent
-            for (int i = 1; i < agentCount; i++)
-            {
-//                agents[i].cloneSteps(parents[i]);
-                agents[i].mutate(mutationRate);
+                NeuralNetwork child = parent1.crossover(parent2);
+
+                child.mutate(mutationRate);
+
+                newBrains[i] = child;
             }
+
+            for (int i = 0; i < agentCount; i++)
+                agents[i].brain = newBrains[i].clone();
 
             //activate agents
             for (int i = 0; i < agentCount; i++)
@@ -110,10 +100,11 @@ public class OvermindRandom : MonoBehaviour
     void UpdateStatusText(int generation, int bestIndex)
     {
         string gen = generation.ToString();
+        string cnt = "\n" + agents.Sum(x => (x.finished ? 1 : 0));
         string best = "\n" + bestIndex;
         string fit = "\n" + agents[bestIndex].fitness;
         string step = "\n" + agents[bestIndex].stepCount;
-        outputPanel.text = gen + best + fit + step;
+        outputPanel.text = gen + cnt + best + fit + step;
     }
 
     void setBestDude()
@@ -133,7 +124,23 @@ public class OvermindRandom : MonoBehaviour
             maxSteps = agents[bestAgentIndex].stepCount < 1 ? 1 : agents[bestAgentIndex].stepCount;
     }
 
-    int getRandParent()
+    NeuralNetwork selectRandomParent(float fitnessSum)
+    {
+        float rand = Random.Range(0, fitnessSum);
+        float sum = 0;
+
+        for (int i = 0; i < agentCount; i++)
+        {
+            sum += agents[i].fitness;
+            if (sum > rand)
+                return agents[i].brain.clone();
+        }
+
+        Debug.Log("Fail: sum " + sum + ", rand " + rand + ", fitness " + fitnessSum);
+        return agents[0].brain.clone();
+    }
+
+    int getRandParent(float fitnessSum)
     {
         float randParent = Random.Range(0, fitnessSum);
         float sum = 0;

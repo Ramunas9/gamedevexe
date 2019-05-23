@@ -58,11 +58,7 @@ public class OvermindRandom : MonoBehaviour
             // natural selection
             setBestDot(); // find best agent and place it into the next gen
             if(bestAgentIndex != 0) // put the best agent in first position
-            {
-                RDAgent temp = agents[0];
-                agents[0] = agents[bestAgentIndex];
-                agents[bestAgentIndex] = temp;
-            }
+                Swap(agents[0], agents[bestAgentIndex]);
 
             // create parents off unmodified agents
             int[][] parents = new int[agentCount][];
@@ -145,6 +141,25 @@ public class OvermindRandom : MonoBehaviour
         }
         Debug.Log("YOU CAN'T REACH THIS");
         return 0;
+    }
+
+    private void Swap(RDAgent source, RDAgent destination)
+    {
+        int hp = source.hp;
+        int stepCount = source.stepCount;
+        int[] steps = new int[source.steps.Length];
+        System.Array.Copy(source.steps, steps, source.steps.Length);
+        float fitness = source.fitness;
+
+        source.hp = destination.hp;
+        source.stepCount = destination.stepCount;
+        System.Array.Copy(destination.steps, source.steps, source.steps.Length);
+        source.fitness = destination.fitness;
+
+        destination.hp = hp;
+        destination.stepCount = stepCount;
+        System.Array.Copy(steps, destination.steps, source.steps.Length);
+        destination.fitness = fitness;
     }
 
     /// <summary>

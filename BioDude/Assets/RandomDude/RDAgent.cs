@@ -8,15 +8,14 @@ public class RDAgent : MonoBehaviour
     public float moveForce = 10f;
 
     [HideInInspector]
-    public bool isBest = false;
     public bool dead = false;
-    public int stepCount { get; private set; }
+    public int stepCount { get; set; }
     public bool finished { get; private set; }
-    public int[] steps { get; private set; }
+    public int[] steps { get; set; }
 
     private OvermindRandom overmind;
 
-    public float fitness { get; private set; }
+    public float fitness { get; set; }
     private int stepCountMax = 0;
     
     private string posFinishTag = "PositionFinish";

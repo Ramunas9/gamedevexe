@@ -25,6 +25,7 @@ public class OvermindRandom : MonoBehaviour
     private Transform agentsFolder;
     private RDAgent[] agents;
     private int generation;
+    private int posChanges;
 
     private int agentCountCurrent;
     private int bestAgentIndex;
@@ -60,7 +61,7 @@ public class OvermindRandom : MonoBehaviour
         {
             float fitnessSum = setBestDude();
 
-            UpdateStatusText(generation, bestAgentIndex);
+            UpdateStatusText();
 
             // natural selection
 
@@ -94,14 +95,15 @@ public class OvermindRandom : MonoBehaviour
             agents[i].transform.position = posStart.position;
     }
 
-    void UpdateStatusText(int generation, int bestIndex)
+    void UpdateStatusText()
     {
         string gen = generation.ToString();
+        string pos = "\n" + posChanges;
         string cnt = "\n" + agents.Sum(x => (x.finished ? 1 : 0));
-        string best = "\n" + bestIndex;
-        string fit = "\n" + agents[bestIndex].fitness;
-        string step = "\n" + agents[bestIndex].stepCount;
-        outputPanel.text = gen + cnt + best + fit + step;
+        string best = "\n" + bestAgentIndex;
+        string fit = "\n" + agents[bestAgentIndex].fitness;
+        string step = "\n" + agents[bestAgentIndex].stepCount;
+        outputPanel.text = gen + pos + cnt + best + fit + step;
     }
 
     void moveStartAndFinishPos()
@@ -113,6 +115,8 @@ public class OvermindRandom : MonoBehaviour
 
             posStart.position = new Vector3(start.x, start.y, posStart.position.z);
             posFinish.position = new Vector3(finish.x, finish.y, posFinish.position.z);
+
+            posChanges++;
         }
 
         finishedCount = 0;

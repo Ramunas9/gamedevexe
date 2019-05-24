@@ -1337,7 +1337,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hp: 1
   moveForce: 200
-  visionDistance: 3
+  visionDistance: 2
   dead: 0
   stepCount: 0
 --- !u!1 &7153960453583607471

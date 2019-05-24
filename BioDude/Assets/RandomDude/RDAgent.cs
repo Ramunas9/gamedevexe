@@ -17,7 +17,7 @@ public class RDAgent : MonoBehaviour
     public int visionDistance;
 
     [HideInInspector] public bool dead = false;
-    public int stepCount { get; set; }
+    public int stepCount;
     public bool finished { get; private set; }
 
     private OvermindRandom overmind;
@@ -45,7 +45,6 @@ public class RDAgent : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         overmind = GameObject.FindGameObjectWithTag("Overmind").GetComponent<OvermindRandom>();
-        posFinish = GameObject.FindGameObjectWithTag(posFinishTag).transform.position;
         stepCount = 0;
         stepCountMax = overmind.maxSteps;
 
@@ -61,22 +60,21 @@ public class RDAgent : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (!dead && !finished)
+        if (dead || finished) return;
+        
+        if (stepCount < stepCountMax)
         {
-            if (stepCount < stepCountMax)
-            {
-                float[] vision = look();
-                int direction = decideDirection(vision);
+            float[] vision = look();
+            int direction = decideDirection(vision);
 
-                rb.AddForce(translateIndexToDirection(direction) * moveForce); // take a step from steps array
-                stepCount++;
-            }
-            else
-            {
-                Debug.Log("DEAD");
-                dead = true;
-                overmind.agentDone();
-            }
+            rb.AddForce(translateIndexToDirection(direction) * moveForce); // take a step from steps array
+            stepCount++;
+        }
+        else
+        {
+            Debug.Log("Out of steps");
+            dead = true;
+            overmind.agentDone(finished);
         }
     }
 
@@ -152,7 +150,6 @@ public class RDAgent : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D col)
     {
-//        Debug.Log(col.gameObject.tag);
         if (col.gameObject.tag != posFinishTag)
         {
             hp--;
@@ -166,15 +163,14 @@ public class RDAgent : MonoBehaviour
                 line.SetPositions(new[] {Vector3.zero, Vector3.zero});
 
             dead = true;
-            rb.velocity = Vector2.zero;
-            overmind.agentDone();
+            overmind.agentDone(finished);
         }
         else
         {
             finished = true;
-//            calculateFitness();
-            overmind.agentDone();
+            overmind.agentDone(finished);
         }
+        rb.velocity = Vector2.zero;
     }
 
     Vector2 translateIndexToDirection(int index)
@@ -200,28 +196,22 @@ public class RDAgent : MonoBehaviour
         if (finished)
         {
             //if the dot reached the goal then the fitness is based on the amount of steps it took to get there
-            fitness = 1.0f + 10000.0f / Mathf.Pow(stepCount, 2);
+            fitness = stepCount <= 0 ? 0 : 1.0f + 10000.0f / Mathf.Pow(stepCount, 2);
+            
         }
         else
         {
             //if the dot didn't reach the goal then the fitness is based on how close it is to the goal
             float distanceToGoal = Vector3.Distance(transform.position, posFinish);
             fitness = distanceToGoal <= 0 ? 1 : 1.0f / Mathf.Pow(distanceToGoal, 2);
-
-            if (distanceToGoal <= 0 || fitness >= Mathf.Infinity)
-            {
-                Debug.Log(distanceToGoal + " FUCKED UP " + fitness);
-            }
-
-//            fitness = fitness >= Single.PositiveInfinity ? 0 : fitness;
         }
     }
 
     public void Revive()
     {
-        hp = transform.GetComponent<RDAgent>().hp;
+        posFinish = GameObject.FindGameObjectWithTag(posFinishTag).transform.position;
+        hp = 1;
         stepCount = 0;
-//        stepCountMax = steps.Length;
         dead = false;
         finished = false;
     }

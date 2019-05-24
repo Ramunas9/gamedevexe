@@ -18,6 +18,7 @@ public class OvermindRandom : MonoBehaviour
     public int maxSteps;
     public Transform agentPrefab;
     public float mutationRate;
+    public int finishedCountToMove;
 
     private Transform posFinish;
     private Transform posStart;
@@ -27,6 +28,7 @@ public class OvermindRandom : MonoBehaviour
 
     private int agentCountCurrent;
     private int bestAgentIndex;
+    private int finishedCount;
 
     private Text outputPanel;
 
@@ -45,6 +47,8 @@ public class OvermindRandom : MonoBehaviour
             agents[i] = Instantiate(agentPrefab, agentsFolder).GetComponent<RDAgent>();
         }
 
+        Destroy(agentsFolder.GetChild(0).gameObject);
+
         startNewGeneration();
     }
 
@@ -54,19 +58,14 @@ public class OvermindRandom : MonoBehaviour
 
         if (generation > 1) // don't need fitness or mutation on first gen
         {
-            float fitnessSum = 0;
-            foreach (RDAgent a in agents)
-            {
-                a.calculateFitness();
-                fitnessSum += a.fitness;
-            }
+            float fitnessSum = setBestDude();
 
             UpdateStatusText(generation, bestAgentIndex);
 
+            // natural selection
+
             NeuralNetwork[] newBrains = new NeuralNetwork[agentCount]; //next generation of agents
 
-            // natural selection
-            setBestDude(); // find best agent and place it into the next gen
             newBrains[0] = agents[bestAgentIndex].brain.clone();
 
             for (int i = 1; i < agentCount; i++)
@@ -84,17 +83,15 @@ public class OvermindRandom : MonoBehaviour
             for (int i = 0; i < agentCount; i++)
                 agents[i].brain = newBrains[i].clone();
 
+            moveStartAndFinishPos();
             //activate agents
             for (int i = 0; i < agentCount; i++)
                 agents[i].Revive();
         }
 
-
         agentCountCurrent = agentCount;
         for (int i = 0; i < agentCount; i++) // put agents into starting position
             agents[i].transform.position = posStart.position;
-
-        Debug.Log(agentCountCurrent);
     }
 
     void UpdateStatusText(int generation, int bestIndex)
@@ -107,11 +104,46 @@ public class OvermindRandom : MonoBehaviour
         outputPanel.text = gen + cnt + best + fit + step;
     }
 
-    void setBestDude()
+    void moveStartAndFinishPos()
     {
-        double max = 0;
+        if (finishedCount >= finishedCountToMove)
+        {
+            var start = getRandomSpotOnFloor();
+            var finish = getRandomSpotOnFloor();
+
+            posStart.position = new Vector3(start.x, start.y, posStart.position.z);
+            posFinish.position = new Vector3(finish.x, finish.y, posFinish.position.z);
+        }
+
+        finishedCount = 0;
+    }
+
+    Vector2 getRandomSpotOnFloor()
+    {
+        float x = 0, y = 0;
+        bool onFloor = false;
+
+        while (!onFloor)
+        {
+            x = Random.Range(-4.514f, 4.514f);
+            y = Random.Range(-3.518f, 20.598f);
+
+            if (!((x < -0.515f || x > 0.515f) && y > 9.513f))
+                onFloor = true;
+        }
+
+        return new Vector2(x, y);
+    }
+
+    float setBestDude()
+    {
+        float max = 0;
+        float sum = 0;
         for (int i = 0; i < agentCount; i++)
         {
+            agents[i].calculateFitness();
+            sum += agents[i].fitness;
+
             if (agents[i].fitness > max)
             {
                 max = agents[i].fitness;
@@ -119,9 +151,7 @@ public class OvermindRandom : MonoBehaviour
             }
         }
 
-        if (agents[bestAgentIndex].finished) // if he finished set new maxSteps
-//            maxSteps = agents[bestAgentIndex].stepCount;
-            maxSteps = agents[bestAgentIndex].stepCount < 1 ? 1 : agents[bestAgentIndex].stepCount;
+        return sum;
     }
 
     NeuralNetwork selectRandomParent(float fitnessSum)
@@ -136,7 +166,7 @@ public class OvermindRandom : MonoBehaviour
                 return agents[i].brain.clone();
         }
 
-        Debug.Log("Fail: sum " + sum + ", rand " + rand + ", fitness " + fitnessSum);
+        Debug.Log("Fail: fitness " + fitnessSum);
         return agents[0].brain.clone();
     }
 
@@ -162,33 +192,15 @@ public class OvermindRandom : MonoBehaviour
         return 0;
     }
 
-    private void Swap(RDAgent source, RDAgent destination)
-    {
-        int hp = source.hp;
-        int stepCount = source.stepCount;
-        NeuralNetwork brain = source.brain.clone();
-        float fitness = source.fitness;
-
-        source.hp = destination.hp;
-        source.stepCount = destination.stepCount;
-        source.brain = destination.brain.clone();
-        source.fitness = destination.fitness;
-
-        destination.hp = hp;
-        destination.stepCount = stepCount;
-        destination.brain = brain;
-        destination.fitness = fitness;
-    }
-
     /// <summary>
     /// ////////////////////////////// PUBLIC METHODS ////////////////////////
     /// </summary>
-    public void agentDone()
+    public void agentDone(bool finished)
     {
+        if (finished)
+            finishedCount++;
         agentCountCurrent--;
         if (agentCountCurrent <= 0)
-        {
             startNewGeneration();
-        }
     }
 }

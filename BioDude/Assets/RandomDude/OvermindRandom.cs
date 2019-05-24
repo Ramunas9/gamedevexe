@@ -136,7 +136,7 @@ public class OvermindRandom : MonoBehaviour
 
         while (!onFloor)
         {
-            x = (int) Random.Range(-4.514f, 10.5f);
+            x = (int) Random.Range(-18f, 24f);
             y = (int) Random.Range(-3.518f, 19.5f);
 
             Debug.Log(floorMap.GetTile(new Vector3Int(x, y, 0)));

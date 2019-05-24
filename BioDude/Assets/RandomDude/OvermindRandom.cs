@@ -78,10 +78,7 @@ public class OvermindRandom : MonoBehaviour
 
             for (int i = 1; i < agentCount; i++)
             {
-                NeuralNetwork parent1 = selectRandomParent(fitnessSum);
-                NeuralNetwork parent2 = selectRandomParent(fitnessSum);
-
-                NeuralNetwork child = parent1.crossover(parent2);
+                NeuralNetwork child = agents[bestAgentIndex].brain.clone();
 
                 child.mutate(mutationRate);
 
@@ -136,7 +133,7 @@ public class OvermindRandom : MonoBehaviour
 
         while (!onFloor)
         {
-            x = (int) Random.Range(-4.514f, 10.5f);
+            x = (int) Random.Range(-18f, 24f);
             y = (int) Random.Range(-3.518f, 19.5f);
 
             Debug.Log(floorMap.GetTile(new Vector3Int(x, y, 0)));

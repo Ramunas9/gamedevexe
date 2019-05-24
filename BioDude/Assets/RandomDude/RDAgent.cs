@@ -48,7 +48,7 @@ public class RDAgent : MonoBehaviour
         stepCount = 0;
         stepCountMax = overmind.maxSteps;
 
-        brain = new NeuralNetwork(9, 0, 4);
+        brain = new NeuralNetwork(9, 7, 4);
 
         staticLines = transform.GetChild(1).GetComponentsInChildren<LineRenderer>();
         visionLines = transform.GetChild(2).GetComponentsInChildren<LineRenderer>();
@@ -65,9 +65,11 @@ public class RDAgent : MonoBehaviour
         if (stepCount < stepCountMax)
         {
             float[] vision = look();
-            int direction = decideDirection(vision);
+//            int direction = decideDirection(vision);
+            Vector2 averageDirection = averageDirections(vision);
 
-            rb.AddForce(translateIndexToDirection(direction) * moveForce); // take a step from steps array
+//            rb.AddForce(translateIndexToDirection(direction) * moveForce); // take a step from steps array
+            rb.AddForce(averageDirection * moveForce); // take a step from steps array
             stepCount++;
         }
         else
@@ -118,6 +120,26 @@ public class RDAgent : MonoBehaviour
         return vision;
     }
 
+    Vector3 averageDirections(float[] vision)
+    {
+        Vector2 average = Vector2.zero;
+        decision = brain.output(vision);
+
+        Vector3 linePosDecisionStart = transform.position;
+        linePosDecisionStart.z = decisionLinesZ;
+
+        for (int i = 0; i < decision.Length; i++)
+        {
+            average += translateIndexToDirection(i) * decision[i];
+
+            var end = translateIndexToDirection(i) * decision[i] * visionDistance;
+            Vector3 linePosDecisionEnd = transform.position + new Vector3(end.x, end.y, decisionLinesZ);
+            decisionLines[i].SetPositions(new[] {linePosDecisionStart, linePosDecisionEnd});
+        }
+
+        return average;
+    }
+
     int decideDirection(float[] vision)
     {
         decision = brain.output(vision);
@@ -153,23 +175,24 @@ public class RDAgent : MonoBehaviour
         if (col.gameObject.tag != posFinishTag)
         {
             hp--;
-            if (hp > 0) return;
-
-            foreach (var line in staticLines)
-                line.SetPositions(new[] {Vector3.zero, Vector3.zero});
-            foreach (var line in visionLines)
-                line.SetPositions(new[] {Vector3.zero, Vector3.zero});
-            foreach (var line in decisionLines)
-                line.SetPositions(new[] {Vector3.zero, Vector3.zero});
-
-            dead = true;
-            overmind.agentDone(finished);
+            if (hp <= 0)
+            {
+                dead = true;
+                overmind.agentDone(finished);
+            }
         }
         else
         {
             finished = true;
             overmind.agentDone(finished);
         }
+
+        foreach (var line in staticLines)
+            line.SetPositions(new[] {Vector3.zero, Vector3.zero});
+        foreach (var line in visionLines)
+            line.SetPositions(new[] {Vector3.zero, Vector3.zero});
+        foreach (var line in decisionLines)
+            line.SetPositions(new[] {Vector3.zero, Vector3.zero});
 
         rb.velocity = Vector2.zero;
     }

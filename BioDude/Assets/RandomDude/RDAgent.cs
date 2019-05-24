@@ -65,11 +65,11 @@ public class RDAgent : MonoBehaviour
         if (stepCount < stepCountMax)
         {
             float[] vision = look();
-//            int direction = decideDirection(vision);
-            Vector2 averageDirection = averageDirections(vision);
+            int direction = decideDirection(vision);
+//            Vector2 averageDirection = averageDirections(vision);
 
-//            rb.AddForce(translateIndexToDirection(direction) * moveForce); // take a step from steps array
-            rb.AddForce(averageDirection * moveForce); // take a step from steps array
+            rb.AddForce(translateIndexToDirection(direction) * moveForce); // take a step from steps array
+//            rb.AddForce(averageDirection * moveForce); // take a step from steps array
             stepCount++;
         }
         else

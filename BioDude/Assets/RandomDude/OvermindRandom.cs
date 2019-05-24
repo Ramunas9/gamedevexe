@@ -70,8 +70,6 @@ public class OvermindRandom : MonoBehaviour
 
             UpdateStatusText();
 
-            // natural selection
-
             NeuralNetwork[] newBrains = new NeuralNetwork[agentCount]; //next generation of agents
 
             newBrains[0] = agents[bestAgentIndex].brain.clone();

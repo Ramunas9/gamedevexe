@@ -61,7 +61,7 @@ public class RDAgent : MonoBehaviour
     void FixedUpdate()
     {
         if (dead || finished) return;
-        
+
         if (stepCount < stepCountMax)
         {
             float[] vision = look();
@@ -112,7 +112,7 @@ public class RDAgent : MonoBehaviour
             vision[i] = visionDistance - hit.distance;
         }
 
-        vision[8] = Vector3.Distance(transform.position, posFinish);
+        vision[8] = Vector3.Angle(transform.position, posFinish);
         visionLines[8].SetPositions(new[] {linePosVisionStart, new Vector3(posFinish.x, posFinish.y, visionLinesZ)});
 
         return vision;
@@ -170,6 +170,7 @@ public class RDAgent : MonoBehaviour
             finished = true;
             overmind.agentDone(finished);
         }
+
         rb.velocity = Vector2.zero;
     }
 
@@ -197,7 +198,6 @@ public class RDAgent : MonoBehaviour
         {
             //if the dot reached the goal then the fitness is based on the amount of steps it took to get there
             fitness = stepCount <= 0 ? 0 : 1.0f + 10000.0f / Mathf.Pow(stepCount, 2);
-            
         }
         else
         {

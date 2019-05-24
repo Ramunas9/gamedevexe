@@ -102,6 +102,6 @@ public class NeuralNetwork
 
     public NeuralNetwork clone()
     {
-        return new NeuralNetwork(iNodes, hNodes, oNodes, new[]{whi, woh});
+        return new NeuralNetwork(iNodes, hNodes, oNodes, new[]{whi.clone(), woh.clone()});
     }
 }

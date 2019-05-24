@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -31,6 +32,9 @@ public class OvermindRandom : MonoBehaviour
     private int bestAgentIndex;
     private int finishedCount;
 
+    private Tilemap floorMap;
+    private Tilemap wallMap;
+
     private Text outputPanel;
 
     // Start is called before the first frame update
@@ -42,6 +46,9 @@ public class OvermindRandom : MonoBehaviour
         agents = new RDAgent[agentCount];
 
         outputPanel = GameObject.FindGameObjectWithTag("Output").transform.GetComponent<Text>();
+
+        floorMap = GameObject.FindGameObjectWithTag("FloorMap").GetComponent<Tilemap>();
+        wallMap = GameObject.FindGameObjectWithTag("Wallmap").GetComponent<Tilemap>();
 
         for (int i = 0; i < agentCount; i++)
         {
@@ -124,15 +131,24 @@ public class OvermindRandom : MonoBehaviour
 
     Vector2 getRandomSpotOnFloor()
     {
-        float x = 0, y = 0;
+        int x = 0, y = 0;
         bool onFloor = false;
 
         while (!onFloor)
         {
-            x = Random.Range(-4.514f, 4.514f);
-            y = Random.Range(-3.518f, 20.598f);
+            x = (int) Random.Range(-4.514f, 10.5f);
+            y = (int) Random.Range(-3.518f, 19.5f);
 
-            if (!((x < -0.515f || x > 0.515f) && y > 9.513f))
+            Debug.Log(floorMap.GetTile(new Vector3Int(x, y, 0)));
+            Debug.Log(wallMap.GetTile(new Vector3Int(x, y, 0)));
+            Debug.Log("------------------");
+
+//            if ((y < 9.5f && x < 4.514f
+//                || x > -0.515f && x < 0.515f
+//                || x > 3.5f && y < 12.5f && y > 9.5f)
+//                &&
+//                !(x > -4f && y > 5.5f && x < -2.45f && y > 9.5f))
+            if (floorMap.GetTile(new Vector3Int(x, y, 0)) != null && wallMap.GetTile(new Vector3Int(x, y, 0)) == null)
                 onFloor = true;
         }
 

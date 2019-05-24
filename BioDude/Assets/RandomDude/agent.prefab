@@ -1339,6 +1339,7 @@ MonoBehaviour:
   moveForce: 200
   visionDistance: 3
   dead: 0
+  stepCount: 0
 --- !u!1 &7153960453583607471
 GameObject:
   m_ObjectHideFlags: 0

@@ -22,6 +22,7 @@ TagManager:
   - PositionFinish
   - Output
   - OutputNN
+  - FloorMap
   layers:
   - Default
   - TransparentFX

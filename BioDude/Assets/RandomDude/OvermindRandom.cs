@@ -18,7 +18,6 @@ public class OvermindRandom : MonoBehaviour
 
     private int agentCountCurrent;
     private int bestAgentIndex;
-    private int finishedCount;
 
     private Text outputPanel;
 
@@ -95,7 +94,6 @@ public class OvermindRandom : MonoBehaviour
     void UpdateStatusText()
     {
         string gen = generation.ToString();
-
         string cnt = "\n" + agents.Sum(x => (x.finished ? 1 : 0));
         string best = "\n" + bestAgentIndex;
         string fit = "\n" + agents[bestAgentIndex].fitness;
@@ -170,10 +168,8 @@ public class OvermindRandom : MonoBehaviour
     /// <summary>
     /// ////////////////////////////// PUBLIC METHODS ////////////////////////
     /// </summary>
-    public void agentDone(bool finished)
+    public void agentDone()
     {
-        if (finished)
-            finishedCount++;
         agentCountCurrent--;
         if (agentCountCurrent <= 0)
             startNewGeneration();

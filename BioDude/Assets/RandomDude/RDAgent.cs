@@ -46,7 +46,7 @@ public class RDAgent : MonoBehaviour
         {
             Debug.Log("Out of steps");
             dead = true;
-            overmind.agentDone(finished);
+            overmind.agentDone();
         }
     }
 
@@ -58,13 +58,13 @@ public class RDAgent : MonoBehaviour
             if (hp <= 0)
             {
                 dead = true;
-                overmind.agentDone(finished);
+                overmind.agentDone();
             }
         }
         else
         {
             finished = true;
-            overmind.agentDone(finished);
+            overmind.agentDone();
         }
 
         rb.velocity = Vector2.zero;

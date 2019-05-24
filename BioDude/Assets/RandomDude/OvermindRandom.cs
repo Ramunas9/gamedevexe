@@ -1,28 +1,27 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 
 public class OvermindRandom : MonoBehaviour
 {
-    public int agentCount = 1;
-    public int maxSteps = 10000;
+    public int agentCount;
+    public int maxSteps;
     public Transform agentPrefab;
-    public float mutationRate = 0.1f;
+    public float mutationRate;
 
     private Transform posFinish;
     private Transform posStart;
     private Transform agentsFolder;
     private RDAgent[] agents;
-    private int generation = 0;
+    private int generation;
 
     private int agentCountCurrent;
-    private float fitnessSum = 0;
-    private int bestAgentIndex = 0;
+    private int bestAgentIndex;
+    private int finishedCount;
 
     private Text outputPanel;
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,13 +29,15 @@ public class OvermindRandom : MonoBehaviour
         posStart = GameObject.Find("PositionStart").transform;
         agentsFolder = GameObject.Find("Agents").transform;
         agents = new RDAgent[agentCount];
-        
+
         outputPanel = GameObject.FindGameObjectWithTag("Output").transform.GetComponent<Text>();
-        
+
         for (int i = 0; i < agentCount; i++)
         {
             agents[i] = Instantiate(agentPrefab, agentsFolder).GetComponent<RDAgent>();
         }
+
+        Destroy(agentsFolder.GetChild(0).gameObject);
 
         startNewGeneration();
     }
@@ -47,17 +48,12 @@ public class OvermindRandom : MonoBehaviour
 
         if (generation > 1) // don't need fitness or mutation on first gen
         {
-            foreach (RDAgent a in agents)
-            {
-                a.calculateFitness();
-                fitnessSum += a.fitness;
-            }
-            
-            UpdateStatusText(generation, bestAgentIndex);
+            float fitnessSum = setBestDude();
+
+            UpdateStatusText();
 
             // natural selection
-            setBestDot(); // find best agent and place it into the next gen
-            if(bestAgentIndex != 0) // put the best agent in first position
+            if (bestAgentIndex != 0) // put the best agent in first position
                 Swap(agents[0], agents[bestAgentIndex]);
 
             // create parents off unmodified agents
@@ -68,15 +64,16 @@ public class OvermindRandom : MonoBehaviour
                 //getRandParent(ref parents[i]);
                 parents[i] = new int[maxSteps];
                 Debug.Log("maxsteps: " + maxSteps);
-                int index = getRandParent();
+                int index = getRandParent(fitnessSum);
                 System.Array.Copy(agents[index].steps, parents[i], maxSteps);
                 Debug.Log("agent: " + agents[index].steps[0]);
                 Debug.Log("parent: " + parents[i][0]);
             }
+
             Debug.Log("parent AFTER: " + parents[1][0]);
 
             // get parent steps, mutate them and assign to agent
-            for (int i = 1; i < agentCount; i++) 
+            for (int i = 1; i < agentCount; i++)
             {
                 agents[i].cloneSteps(parents[i]);
                 agents[i].mutate(mutationRate);
@@ -91,38 +88,45 @@ public class OvermindRandom : MonoBehaviour
         agentCountCurrent = agentCount;
         for (int i = 0; i < agentCount; i++) // put agents into starting position
             agents[i].transform.position = posStart.position;
-        
+
         Debug.Log(agentCountCurrent);
     }
 
-    void UpdateStatusText(int generation, int bestIndex)
+    void UpdateStatusText()
     {
         string gen = generation.ToString();
-        string best = "\n" + bestIndex;
-        string fit = "\n" + agents[bestIndex].fitness;
-        string step = "\n" + agents[bestIndex].stepCount;
-        outputPanel.text = gen + best + fit + step;
+
+        string cnt = "\n" + agents.Sum(x => (x.finished ? 1 : 0));
+        string best = "\n" + bestAgentIndex;
+        string fit = "\n" + agents[bestAgentIndex].fitness;
+        string step = "\n" + agents[bestAgentIndex].stepCount;
+        outputPanel.text = gen + cnt + best + fit + step;
     }
 
-    void setBestDot()
+    float setBestDude()
     {
-        double max = 0;
+        float max = 0;
+        float sum = 0;
         for (int i = 0; i < agentCount; i++)
         {
-            Debug.Log(i + " -- " + agents[i].stepCount  + " -- " + agents[i].fitness  + " -- " + agents[i].finished);
-        
-            if(agents[i].fitness > max)
+            agents[i].calculateFitness();
+            sum += agents[i].fitness;
+            Debug.Log(i + " -- " + agents[i].stepCount + " -- " + agents[i].fitness + " -- " + agents[i].finished);
+
+            if (agents[i].fitness > max)
             {
                 max = agents[i].fitness;
                 bestAgentIndex = i;
             }
         }
+
         if (agents[bestAgentIndex].finished) // if he finished set new maxSteps
 //            maxSteps = agents[bestAgentIndex].stepCount;
-            maxSteps = agents[bestAgentIndex].stepCount < 1 ? 1 : agents[bestAgentIndex].stepCount;
+            maxSteps = agents[bestAgentIndex].stepCount < 1 ? maxSteps : agents[bestAgentIndex].stepCount;
+        return sum;
     }
 
-    int getRandParent()
+    int getRandParent(float fitnessSum)
     {
         float randParent = Random.Range(0, fitnessSum);
         float sum = 0;
@@ -130,7 +134,7 @@ public class OvermindRandom : MonoBehaviour
         for (int i = 0; i < agentCount; i++)
         {
             sum += agents[i].fitness;
-            if(sum > randParent)
+            if (sum > randParent)
             {
                 // clone parent steps array
                 //agents[i].steps.CopyTo(newsteps, 0); // doesnt work wtf
@@ -139,6 +143,7 @@ public class OvermindRandom : MonoBehaviour
                 return i;
             }
         }
+
         Debug.Log("YOU CAN'T REACH THIS");
         return 0;
     }
@@ -165,12 +170,12 @@ public class OvermindRandom : MonoBehaviour
     /// <summary>
     /// ////////////////////////////// PUBLIC METHODS ////////////////////////
     /// </summary>
-    public void agentDone()
+    public void agentDone(bool finished)
     {
+        if (finished)
+            finishedCount++;
         agentCountCurrent--;
-        if(agentCountCurrent <= 0)
-        {
+        if (agentCountCurrent <= 0)
             startNewGeneration();
-        }
     }
 }

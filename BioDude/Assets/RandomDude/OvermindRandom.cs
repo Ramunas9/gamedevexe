@@ -108,7 +108,7 @@ public class OvermindRandom : MonoBehaviour
 
     void moveStartAndFinishPos()
     {
-        if (finishedCount >= finishedCountToMove)
+        if (finishedCount >= finishedCountToMove || generation / posChanges > 30)
         {
             var start = getRandomSpotOnFloor();
             var finish = getRandomSpotOnFloor();

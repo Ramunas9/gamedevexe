@@ -161,4 +161,15 @@ public class Matrix
 
         return line;
     }
+
+    public Matrix clone()
+    {
+        Matrix clone = new Matrix(rows, cols);
+        
+        for (int i = 0; i < rows; i++)
+        for (int j = 0; j < cols; j++)
+            clone.matrix[i, j] = matrix[i, j];
+
+        return clone;
+    }
 }

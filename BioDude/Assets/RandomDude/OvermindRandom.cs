@@ -118,10 +118,10 @@ public class OvermindRandom : MonoBehaviour
 //        if (finishedCount >= finishedCountToMove || generation / (posChanges + 1) > 30)
         {
             var start = getRandomSpotOnFloor();
-            var finish = getRandomSpotOnFloor();
+//            var finish = getRandomSpotOnFloor();
 
             posStart.position = new Vector3(start.x, start.y, posStart.position.z);
-            posFinish.position = new Vector3(finish.x, finish.y, posFinish.position.z);
+//            posFinish.position = new Vector3(finish.x, finish.y, posFinish.position.z);
 
             posChanges++;
         }

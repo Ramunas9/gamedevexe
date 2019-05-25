@@ -11599,7 +11599,7 @@ MonoBehaviour:
   agentPrefab: {fileID: 7155626595190983555, guid: 9ead7fe9bdcb10c4382f4365898eff94,
     type: 3}
   mutationRate: 0.02
-  finishedCountToMove: 15
+  finishedCountToMove: 90
 --- !u!4 &2035270004
 Transform:
   m_ObjectHideFlags: 0
@@ -11791,7 +11791,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1402278668318736}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.37, y: 6.7, z: 0}
+  m_LocalPosition: {x: 3.01, y: 7.4, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_Children: []
   m_Father: {fileID: 604402281}

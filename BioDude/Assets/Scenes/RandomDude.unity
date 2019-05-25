@@ -5141,12 +5141,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 152087241bcf8434bb0bd570bf16e4c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agentCount: 20
+  agentCount: 100
   maxSteps: 1000
   agentPrefab: {fileID: 7155626595190983555, guid: 9ead7fe9bdcb10c4382f4365898eff94,
     type: 3}
   mutationRate: 0.02
-  finishedCountToMove: 15
+  finishedCountToMove: 90
 --- !u!4 &2035270004
 Transform:
   m_ObjectHideFlags: 0
@@ -5338,7 +5338,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1402278668318736}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.37, y: 6.7, z: 0}
+  m_LocalPosition: {x: 0.01, y: 19.2, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_Children: []
   m_Father: {fileID: 604402281}

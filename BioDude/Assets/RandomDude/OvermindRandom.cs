@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
+using System.IO;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable SuggestVarOrType_BuiltInTypes
@@ -37,9 +38,14 @@ public class OvermindRandom : MonoBehaviour
 
     private Text outputPanel;
 
+    private string filename;
+    
     // Start is called before the first frame update
     void Start()
     {
+        int timeStamp = (int)(System.Diagnostics.Stopwatch.GetTimestamp() / (long)1000000) - 8400000;
+        filename = string.Format("{0:yyyy-MM-dd}_{1}__result.csv", System.DateTime.Now, System.DateTime.Now.ToString("HH;mm;ss"));
+
         posFinish = GameObject.Find("PositionFinish").transform;
         posStart = GameObject.Find("PositionStart").transform;
         agentsFolder = GameObject.Find("Agents").transform;
@@ -69,6 +75,8 @@ public class OvermindRandom : MonoBehaviour
             float fitnessSum = setBestDude();
 
             UpdateStatusText();
+
+            ResultsToFile();
 
             NeuralNetwork[] newBrains = new NeuralNetwork[agentCount]; //next generation of agents
 
@@ -106,6 +114,14 @@ public class OvermindRandom : MonoBehaviour
         string fit = "\n" + agents[bestAgentIndex].fitness;
         string step = "\n" + agents[bestAgentIndex].stepCount;
         outputPanel.text = gen + pos + cnt + best + fit + step;
+    }
+
+    void ResultsToFile()
+    {
+        using (var sw = new StreamWriter("Results/" + filename, true))
+        {
+            sw.WriteLine("The next line!");
+        }
     }
 
     void moveStartAndFinishPos()

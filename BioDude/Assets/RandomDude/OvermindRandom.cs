@@ -44,7 +44,6 @@ public class OvermindRandom : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        int timeStamp = (int)(System.Diagnostics.Stopwatch.GetTimestamp() / (long)1000000) - 8400000;
         filename = string.Format("{0:yyyy-MM-dd}_{1}__result.csv", System.DateTime.Now, System.DateTime.Now.ToString("HH;mm;ss"));
 
         posFinish = GameObject.Find("PositionFinish").transform;
@@ -119,14 +118,18 @@ public class OvermindRandom : MonoBehaviour
 
     void ResultsToFile()
     {
-        using (var sw = new StreamWriter("Results/" + filename, true))
+        if (!File.Exists("Results/" + filename))
         {
-            if (!File.Exists("Results/" + filename))
+            using (var sw = new StreamWriter("Results/" + filename, true))
             {
                 sw.WriteLine(
                     "Generation,Agent Count,Mutation Rate,Best fitness,Avg. Fitness,Finished count"
                     );
             }
+        }
+
+        using (var sw = new StreamWriter("Results/" + filename, true))
+        {
             sw.WriteLine(string.Format(
                 "{0},{1},{2},{3},{4},{5}", generation, agentCount, mutationRate, 
                 agents[bestAgentIndex].fitness, fitnessSum/agentCount, finishedCount

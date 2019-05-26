@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-
+using System.IO;
 
 public class OvermindRandom : MonoBehaviour
 {
@@ -9,6 +9,7 @@ public class OvermindRandom : MonoBehaviour
     public int maxSteps;
     public Transform agentPrefab;
     public float mutationRate;
+    private float fitnessSum;
 
     private Transform posFinish;
     private Transform posStart;
@@ -20,10 +21,13 @@ public class OvermindRandom : MonoBehaviour
     private int bestAgentIndex;
 
     private Text outputPanel;
+    private string filename;
 
     // Start is called before the first frame update
     void Start()
     {
+        filename = string.Format("{0:yyyy-MM-dd}_{1}__result.csv", System.DateTime.Now, System.DateTime.Now.ToString("HH;mm;ss"));
+
         posFinish = GameObject.Find("PositionFinish").transform;
         posStart = GameObject.Find("PositionStart").transform;
         agentsFolder = GameObject.Find("Agents").transform;
@@ -47,9 +51,11 @@ public class OvermindRandom : MonoBehaviour
 
         if (generation > 1) // don't need fitness or mutation on first gen
         {
-            float fitnessSum = setBestDude();
+            fitnessSum = setBestDude();
 
             UpdateStatusText();
+
+            ResultsToFile();
 
             // natural selection
             if (bestAgentIndex != 0) // put the best agent in first position
@@ -99,6 +105,27 @@ public class OvermindRandom : MonoBehaviour
         string fit = "\n" + agents[bestAgentIndex].fitness;
         string step = "\n" + agents[bestAgentIndex].stepCount;
         outputPanel.text = gen + cnt + best + fit + step;
+    }
+
+    void ResultsToFile()
+    {
+        if (!File.Exists("Results/" + filename))
+        {
+            using (var sw = new StreamWriter("Results/" + filename, true))
+            {
+                sw.WriteLine(
+                    "Generation,Agent Count,Mutation Rate,Best fitness,Avg. Fitness,Max. step count"
+                    );
+            }
+        }
+
+        using (var sw = new StreamWriter("Results/" + filename, true))
+        {
+            sw.WriteLine(string.Format(
+                "{0},{1},{2},{3},{4},{5}", generation, agentCount, mutationRate,
+                agents[bestAgentIndex].fitness, fitnessSum / agentCount, maxSteps
+                ));
+        }
     }
 
     float setBestDude()

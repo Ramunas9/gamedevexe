@@ -11595,10 +11595,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agentCount: 100
-  maxSteps: 1000
+  maxSteps: 600
   agentPrefab: {fileID: 7155626595190983555, guid: 9ead7fe9bdcb10c4382f4365898eff94,
     type: 3}
-  mutationRate: 0.1
+  mutationRate: 0.05
   finishedCountToMove: 90
 --- !u!4 &2035270004
 Transform:

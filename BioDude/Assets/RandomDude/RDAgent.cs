@@ -48,7 +48,7 @@ public class RDAgent : MonoBehaviour
         stepCount = 0;
         stepCountMax = overmind.maxSteps;
 
-        brain = new NeuralNetwork(9, 36, 4);
+        brain = new NeuralNetwork(9, 8, 4);
 
         staticLines = transform.GetChild(1).GetComponentsInChildren<LineRenderer>();
         visionLines = transform.GetChild(2).GetComponentsInChildren<LineRenderer>();
@@ -111,13 +111,39 @@ public class RDAgent : MonoBehaviour
             staticLines[i].SetPositions(new[] {linePosStaticStart, linePosStaticEnd});
             visionLines[i].SetPositions(new[] {linePosVisionStart, linePosVisionEnd});
 
-            vision[i] = visionDistance - hit.distance;
+            //old version - gives 0 value if no hit and jumps to max value if hit at max range
+            //vision[i] = visionDistance - hit.distance;
+
+            //new version - returns the length of the raycast
+            vision[i] = hit.distance == 0f ? visionDistance: hit.distance;
+            //Debug.Log(i + ": " + vision[i]);
         }
 
-        vision[8] = Vector3.Angle(transform.position, posFinish);
+        //vision[8] = Vector3.Angle(transform.position, posFinish);
+        //vision[8] = Vector3.SignedAngle(transform.position, posFinish, Vector3.right);
+        vision[8] = AngleInDeg(transform.position, posFinish);
         visionLines[8].SetPositions(new[] {linePosVisionStart, new Vector3(posFinish.x, posFinish.y, visionLinesZ)});
 
+
+        /*float var1 = Vector3.SignedAngle(transform.position, posFinish, Vector3.up);
+        float var2 = Vector3.SignedAngle(transform.position, posFinish, Vector3.right);
+        float var3 = Vector3.SignedAngle(transform.position, posFinish, Vector3.forward);
+
+        Debug.Log("var1: " + var1);
+        Debug.Log("var2: " + var1);
+        Debug.Log("var3: " + var1);*/
+
         return vision;
+    }
+
+    public static float AngleInRad(Vector3 vec1, Vector3 vec2)
+    {
+        return Mathf.Atan2(vec2.y - vec1.y, vec2.x - vec1.x);
+    }
+
+    public static float AngleInDeg(Vector3 vec1, Vector3 vec2)
+    {
+        return AngleInRad(vec1, vec2) * 180 / Mathf.PI;
     }
 
     Vector3 averageDirections(float[] vision)

@@ -1,0 +1,4 @@
+Generation,Agent Count,Mutation Rate,Best fitness,Avg. Fitness,Max. step count,Finished count
+2,1,0.02,0.00690992,0.00690992,100000,0
+3,1,0.02,0.06965144,0.06965144,100000,0
+4,1,0.02,0.04848484,0.04848484,100000,0

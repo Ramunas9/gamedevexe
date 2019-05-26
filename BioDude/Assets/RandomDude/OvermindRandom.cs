@@ -94,7 +94,7 @@ public class OvermindRandom : MonoBehaviour
             for (int i = 0; i < agentCount; i++)
                 agents[i].brain = newBrains[i].clone();
 
-//            moveStartAndFinishPos();
+            moveStartAndFinishPos();
             //activate agents
             for (int i = 0; i < agentCount; i++)
                 agents[i].Revive();
@@ -103,6 +103,8 @@ public class OvermindRandom : MonoBehaviour
         agentCountCurrent = agentCount;
         for (int i = 0; i < agentCount; i++) // put agents into starting position
             agents[i].transform.position = posStart.position;
+
+        finishedCount = 0;
     }
 
     void UpdateStatusText()
@@ -123,7 +125,7 @@ public class OvermindRandom : MonoBehaviour
             using (var sw = new StreamWriter("Results/" + filename, true))
             {
                 sw.WriteLine(
-                    "Generation,Agent Count,Mutation Rate,Best fitness,Avg. Fitness,Finished count"
+                    "Generation,Agent Count,Mutation Rate,Best fitness,Avg. Fitness,Max. step count,Finished count"
                     );
             }
         }
@@ -131,8 +133,8 @@ public class OvermindRandom : MonoBehaviour
         using (var sw = new StreamWriter("Results/" + filename, true))
         {
             sw.WriteLine(string.Format(
-                "{0},{1},{2},{3},{4},{5}", generation, agentCount, mutationRate, 
-                agents[bestAgentIndex].fitness, fitnessSum/agentCount, finishedCount
+                "{0},{1},{2},{3:F8},{4:F8},{5},{6}", generation, agentCount, mutationRate, 
+                agents[bestAgentIndex].fitness,  fitnessSum/agentCount, maxSteps, finishedCount
                 ));
         }
     }
@@ -163,9 +165,9 @@ public class OvermindRandom : MonoBehaviour
             x = (int) Random.Range(-18f, 24f);
             y = (int) Random.Range(-3.518f, 19.5f);
 
-            Debug.Log(floorMap.GetTile(new Vector3Int(x, y, 0)));
-            Debug.Log(wallMap.GetTile(new Vector3Int(x, y, 0)));
-            Debug.Log("------------------");
+            //Debug.Log(floorMap.GetTile(new Vector3Int(x, y, 0)));
+            //Debug.Log(wallMap.GetTile(new Vector3Int(x, y, 0)));
+            //Debug.Log("------------------");
 
 //            if ((y < 9.5f && x < 4.514f
 //                || x > -0.515f && x < 0.515f

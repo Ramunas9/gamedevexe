@@ -74,7 +74,7 @@ public class RDAgent : MonoBehaviour
         }
         else
         {
-            Debug.Log("Out of steps");
+            //Debug.Log("Out of steps");
             dead = true;
             overmind.agentDone(finished);
         }

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
+using System.IO;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable SuggestVarOrType_BuiltInTypes
@@ -20,6 +21,7 @@ public class OvermindRandom : MonoBehaviour
     public Transform agentPrefab;
     public float mutationRate;
     public int finishedCountToMove;
+    private float fitnessSum;
 
     private Transform posFinish;
     private Transform posStart;
@@ -37,9 +39,13 @@ public class OvermindRandom : MonoBehaviour
 
     private Text outputPanel;
 
+    private string filename;
+
     // Start is called before the first frame update
     void Start()
     {
+        filename = string.Format("{0:yyyy-MM-dd}_{1}__result.csv", System.DateTime.Now, System.DateTime.Now.ToString("HH;mm;ss"));
+
         posFinish = GameObject.Find("PositionFinish").transform;
         posStart = GameObject.Find("PositionStart").transform;
         agentsFolder = GameObject.Find("Agents").transform;
@@ -66,9 +72,11 @@ public class OvermindRandom : MonoBehaviour
 
         if (generation > 1) // don't need fitness or mutation on first gen
         {
-            float fitnessSum = setBestDude();
+            fitnessSum = setBestDude();
 
             UpdateStatusText();
+
+            ResultsToFile();
 
             // natural selection
 
@@ -112,6 +120,28 @@ public class OvermindRandom : MonoBehaviour
         string step = "\n" + agents[bestAgentIndex].stepCount;
         outputPanel.text = gen + pos + cnt + best + fit + step;
     }
+
+    void ResultsToFile()
+    {
+        if (!File.Exists("Results/" + filename))
+        {
+            using (var sw = new StreamWriter("Results/" + filename, true))
+            {
+                sw.WriteLine(
+                    "Generation,Agent Count,Mutation Rate,Best fitness,Avg. Fitness,Finished count"
+                    );
+            }
+        }
+
+        using (var sw = new StreamWriter("Results/" + filename, true))
+        {
+            sw.WriteLine(string.Format(
+                "{0},{1},{2},{3},{4},{5}", generation, agentCount, mutationRate,
+                agents[bestAgentIndex].fitness, fitnessSum / agentCount, finishedCount
+                ));
+        }
+    }
+
 
     void moveStartAndFinishPos()
     {

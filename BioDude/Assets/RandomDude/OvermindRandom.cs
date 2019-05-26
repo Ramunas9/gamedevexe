@@ -32,6 +32,7 @@ public class OvermindRandom : MonoBehaviour
     private int agentCountCurrent;
     private int bestAgentIndex;
     private int finishedCount;
+    private float fitnessSum;
 
     private Tilemap floorMap;
     private Tilemap wallMap;
@@ -72,7 +73,7 @@ public class OvermindRandom : MonoBehaviour
 
         if (generation > 1) // don't need fitness or mutation on first gen
         {
-            float fitnessSum = setBestDude();
+            fitnessSum = setBestDude();
 
             UpdateStatusText();
 
@@ -120,7 +121,16 @@ public class OvermindRandom : MonoBehaviour
     {
         using (var sw = new StreamWriter("Results/" + filename, true))
         {
-            sw.WriteLine("The next line!");
+            if (!File.Exists("Results/" + filename))
+            {
+                sw.WriteLine(
+                    "Generation,Agent Count,Mutation Rate,Best fitness,Avg. Fitness,Finished count"
+                    );
+            }
+            sw.WriteLine(string.Format(
+                "{0},{1},{2},{3},{4},{5}", generation, agentCount, mutationRate, 
+                agents[bestAgentIndex].fitness, fitnessSum/agentCount, finishedCount
+                ));
         }
     }
 
@@ -185,9 +195,9 @@ public class OvermindRandom : MonoBehaviour
         return sum;
     }
 
-    NeuralNetwork selectRandomParent(float fitnessSum)
+    NeuralNetwork selectRandomParent(float fitness_Sum)
     {
-        float rand = Random.Range(0, fitnessSum);
+        float rand = Random.Range(0, fitness_Sum);
         float sum = 0;
 
         for (int i = 0; i < agentCount; i++)
@@ -197,13 +207,13 @@ public class OvermindRandom : MonoBehaviour
                 return agents[i].brain.clone();
         }
 
-        Debug.Log("Fail: fitness " + fitnessSum);
+        Debug.Log("Fail: fitness " + fitness_Sum);
         return agents[0].brain.clone();
     }
 
-    int getRandParent(float fitnessSum)
+    int getRandParent(float fitness_Sum)
     {
-        float randParent = Random.Range(0, fitnessSum);
+        float randParent = Random.Range(0, fitness_Sum);
         float sum = 0;
 
         for (int i = 0; i < agentCount; i++)

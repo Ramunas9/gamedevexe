@@ -128,7 +128,7 @@ public class OvermindRandom : MonoBehaviour
             using (var sw = new StreamWriter("Results/" + filename, true))
             {
                 sw.WriteLine(
-                    "Generation,Agent Count,Mutation Rate,Best fitness,Avg. Fitness,Finished count"
+                    "Generation,Agent Count,Mutation Rate,Best fitness,Avg. Fitness,Max. step count,Finished count"
                     );
             }
         }
@@ -136,12 +136,11 @@ public class OvermindRandom : MonoBehaviour
         using (var sw = new StreamWriter("Results/" + filename, true))
         {
             sw.WriteLine(string.Format(
-                "{0},{1},{2},{3},{4},{5}", generation, agentCount, mutationRate,
-                agents[bestAgentIndex].fitness, fitnessSum / agentCount, finishedCount
+                "{0},{1},{2},{3},{4},{5},{6}", generation, agentCount, mutationRate,
+                agents[bestAgentIndex].fitness, fitnessSum / agentCount, maxSteps, finishedCount
                 ));
         }
     }
-
 
     void moveStartAndFinishPos()
     {

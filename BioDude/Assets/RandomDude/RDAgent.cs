@@ -111,13 +111,29 @@ public class RDAgent : MonoBehaviour
             staticLines[i].SetPositions(new[] {linePosStaticStart, linePosStaticEnd});
             visionLines[i].SetPositions(new[] {linePosVisionStart, linePosVisionEnd});
 
-            vision[i] = visionDistance - hit.distance;
+            //old version - gives 0 value if no hit and jumps to max value if hit at max range
+            //vision[i] = visionDistance - hit.distance;
+
+            vision[i] = hit.distance == 0f ? visionDistance: hit.distance;
+            //Debug.Log(i + ": " + vision[i]);
         }
 
-        vision[8] = Vector3.Angle(transform.position, posFinish);
+        //vision[8] = Vector3.Angle(transform.position, posFinish);
+        //vision[8] = Vector3.SignedAngle(transform.position, posFinish, Vector3.right);
+        vision[8] = AngleInDeg(transform.position, posFinish);
         visionLines[8].SetPositions(new[] {linePosVisionStart, new Vector3(posFinish.x, posFinish.y, visionLinesZ)});
 
         return vision;
+    }
+
+    public static float AngleInRad(Vector3 vec1, Vector3 vec2)
+    {
+        return Mathf.Atan2(vec2.y - vec1.y, vec2.x - vec1.x);
+    }
+
+    public static float AngleInDeg(Vector3 vec1, Vector3 vec2)
+    {
+        return AngleInRad(vec1, vec2) * 180 / Mathf.PI;
     }
 
     Vector3 averageDirections(float[] vision)

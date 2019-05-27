@@ -97,7 +97,7 @@ public class RDAgent : MonoBehaviour
     /// <summary>
     /// ///////////////////////////////////// PUBLIC METHODS /////////////////////////////////////////////////
     /// </summary>
-    public void calculateFitness_old()
+    public void calculateFitness()
     {
         if (finished)
         {
@@ -110,14 +110,6 @@ public class RDAgent : MonoBehaviour
             float distanceToGoal = Vector3.Distance(transform.position, posFinish);
             fitness = distanceToGoal <= 0 ? 1 : 1.0f / Mathf.Pow(distanceToGoal, 2);
         }
-    }
-
-    public void calculateFitness()
-    {
-        float distanceToGoal = Vector3.Distance(transform.position, posFinish);
-
-        fitness = distanceToGoal <= 0f ? 1 : 1.0f / Mathf.Pow(distanceToGoal, 2);
-        fitness += stepCount <= 0 ? 0 : 10000.0f / Mathf.Pow(stepCount, 2);
     }
 
     public void Revive()

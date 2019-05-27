@@ -94,7 +94,7 @@ public class NeuralNetwork
         Matrix outputInputs = woh.dot(hiddenOutputsBias);
         Matrix outputs = outputInputs.activate();
 
-        outputPanelNN.text = outputs.output();
+        //outputPanelNN.text = outputs.output();
 
         //convert to an array and return
         return outputs.toArray();

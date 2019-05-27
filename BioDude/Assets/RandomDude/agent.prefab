@@ -1336,10 +1336,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hp: 1
-  moveForce: 200
+  moveForce: 0.2
   visionDistance: 2
   dead: 0
   stepCount: 0
+  agent_moved: 0
 --- !u!1 &7153960453583607471
 GameObject:
   m_ObjectHideFlags: 0

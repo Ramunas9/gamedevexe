@@ -12469,12 +12469,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 152087241bcf8434bb0bd570bf16e4c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  first_output: 0
+  updated_count: 0
+  next_update: 0
   agentCount: 100
   maxSteps: 600
   agentPrefab: {fileID: 7155626595190983555, guid: 9ead7fe9bdcb10c4382f4365898eff94,
     type: 3}
   mutationRate: 0.05
   finishedCountToMove: 90
+  finishedCount: 0
 --- !u!4 &2035270004
 Transform:
   m_ObjectHideFlags: 0
@@ -12526,7 +12530,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_TargetDisplay: 0
 --- !u!224 &2063984179
 RectTransform:

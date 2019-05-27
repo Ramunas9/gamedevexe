@@ -134,14 +134,12 @@ public class RDAgent : MonoBehaviour
 
             //new version - returns the length of the raycast
             vision[i] = hit.distance == 0f ? visionDistance : hit.distance;
-            vision[i] /= visionDistance;
             //Debug.Log(i + ": " + vision[i]);
         }
 
         //vision[8] = Vector3.Angle(transform.position, posFinish);
         //vision[8] = Vector3.SignedAngle(transform.position, posFinish, Vector3.right);
         vision[8] = AngleInDeg(transform.position, posFinish);
-        vision[8] /= 180;
         visionLines[8].SetPositions(new[] {linePosVisionStart, new Vector3(posFinish.x, posFinish.y, visionLinesZ)});
 
         return vision;

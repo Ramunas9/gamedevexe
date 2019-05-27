@@ -5,6 +5,8 @@ using System.IO;
 
 public class OvermindRandom : MonoBehaviour
 {
+    public int max_gen_count = 3000;
+
     public int updated_count;
 
     public int agentCount;
@@ -130,7 +132,7 @@ public class OvermindRandom : MonoBehaviour
             using (var sw = new StreamWriter("Results/" + filename, true))
             {
                 sw.WriteLine(
-                    "Generation,Agent Count,Mutation Rate,Best fitness,Avg. Fitness,Max. step count"
+                    "Generation,Agent Count,Mutation Rate,Best fitness,Avg. Fitness,Max. step count,Finished count"
                     );
             }
         }
@@ -139,7 +141,7 @@ public class OvermindRandom : MonoBehaviour
         {
             sw.WriteLine(string.Format(
                 "{0},{1},{2},{3},{4},{5}", generation, agentCount, mutationRate,
-                agents[bestAgentIndex].fitness, fitnessSum / agentCount, maxSteps
+                agents[bestAgentIndex].fitness, fitnessSum / agentCount, maxSteps, finishedCount
                 ));
         }
     }
@@ -224,6 +226,15 @@ public class OvermindRandom : MonoBehaviour
             finishedCount++;
         agentCountCurrent--;
         if (agentCountCurrent <= 0)
-            startNewGeneration();
+        {
+            if (generation <= max_gen_count)
+            {
+                startNewGeneration();
+            }
+            else
+            {
+                Application.Quit();
+            }
+        }
     }
 }

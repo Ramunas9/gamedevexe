@@ -40,3 +40,4 @@ sysinfo.txt
 *.orig.meta
 BioDude/Assets/Plugins/Editor.meta
 BioDude/Assets/Plugins/Editor/JetBrains.meta
+*.csv

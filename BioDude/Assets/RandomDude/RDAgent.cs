@@ -19,9 +19,13 @@ public class RDAgent : MonoBehaviour
     private Vector3 posFinish;
     private Rigidbody2D rb;
 
+    public bool agent_moved;
+
+
     // Start is called before the first frame update
     void Start()
     {
+        agent_moved = false;
         rb = GetComponent<Rigidbody2D>();
         overmind = GameObject.FindGameObjectWithTag("Overmind").GetComponent<OvermindRandom>();
         posFinish = GameObject.FindGameObjectWithTag(posFinishTag).transform.position;
@@ -37,16 +41,23 @@ public class RDAgent : MonoBehaviour
     {
         if (dead || finished) return;
 
+        if (agent_moved) return;
+
         if (stepCount < stepCountMax)
         {
-            rb.AddForce(translateIndexToDirection(steps[stepCount]) * moveForce); // take a step from steps array
+            Vector2 dir = translateIndexToDirection(steps[stepCount]);
+
+            transform.position += new Vector3(dir.x, dir.y, 0) * moveForce;
+            //rb.AddForce(translateIndexToDirection(steps[stepCount]) * moveForce); // take a step from steps array
             stepCount++;
+            agent_moved = true;
+            overmind.updated_count++;
         }
         else
         {
             Debug.Log("Out of steps");
             dead = true;
-            overmind.agentDone();
+            overmind.agentDone(finished);
         }
     }
 
@@ -58,13 +69,13 @@ public class RDAgent : MonoBehaviour
             if (hp <= 0)
             {
                 dead = true;
-                overmind.agentDone();
+                overmind.agentDone(finished);
             }
         }
         else
         {
             finished = true;
-            overmind.agentDone();
+            overmind.agentDone(finished);
         }
 
         rb.velocity = Vector2.zero;

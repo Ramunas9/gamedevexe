@@ -91,7 +91,7 @@ public class OvermindRandom : MonoBehaviour
 
                 NeuralNetwork child = parent1.crossover(parent2);
 
-                child.mutate(mutationRate);
+                child.mutate(mutationRate * (1 - agents.Sum(x => (x.finished ? 1 : 0) / agentCount)));
 
                 newBrains[i] = child;
             }

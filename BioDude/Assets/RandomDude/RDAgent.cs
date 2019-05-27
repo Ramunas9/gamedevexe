@@ -75,7 +75,7 @@ public class RDAgent : MonoBehaviour
         else
         {
             //Debug.Log("Out of steps");
-            dead = true;
+            //dead = true;
             overmind.agentDone(finished);
         }
     }
@@ -247,6 +247,11 @@ public class RDAgent : MonoBehaviour
         {
             //if the dot reached the goal then the fitness is based on the amount of steps it took to get there
             fitness = stepCount <= 0 ? 0 : 1.0f + 10000.0f / Mathf.Pow(stepCount, 2);
+        }
+        else if (dead)
+        {
+            float distanceToGoal = Vector3.Distance(transform.position, posFinish);
+            fitness = distanceToGoal <= 0 ? 1 : 0.1f / Mathf.Pow(distanceToGoal, 2);
         }
         else
         {

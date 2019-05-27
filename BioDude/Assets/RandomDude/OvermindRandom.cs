@@ -63,7 +63,7 @@ public class OvermindRandom : MonoBehaviour
             for (int i = 1; i < agentCount; i++)
             {
                 agents[i].cloneSteps(agents[0].steps);
-                agents[i].mutate(mutationRate);
+                agents[i].mutate(mutationRate * (1 - agents.Sum(x => (x.finished ? 1 : 0) / agentCount)));
             }
 
             //activate agents

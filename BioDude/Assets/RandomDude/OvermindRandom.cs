@@ -16,6 +16,8 @@ using System.IO;
 
 public class OvermindRandom : MonoBehaviour
 {
+    public int max_gen_count = 3000;
+
     public bool first_output;
 
     public int updated_count;
@@ -44,7 +46,7 @@ public class OvermindRandom : MonoBehaviour
     private Text outputPanel;
 
     private string filename;
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -112,7 +114,7 @@ public class OvermindRandom : MonoBehaviour
 
                 newBrains[i] = child;
             }
-            
+
             for (int i = 0; i < agentCount; i++)
                 agents[i].brain = newBrains[i].clone();
 
@@ -157,21 +159,21 @@ public class OvermindRandom : MonoBehaviour
         using (var sw = new StreamWriter("Results/" + filename, true))
         {
             sw.WriteLine(string.Format(
-                "{0},{1},{2},{3:F8},{4:F8},{5},{6}", generation, agentCount, mutationRate, 
-                agents[bestAgentIndex].fitness,  fitnessSum/agentCount, maxSteps, finishedCount
+                "{0},{1},{2},{3:F8},{4:F8},{5},{6}", generation, agentCount, mutationRate,
+                agents[bestAgentIndex].fitness, fitnessSum / agentCount, maxSteps, finishedCount
                 ));
         }
     }
 
     void moveStartAndFinishPos()
     {
-//        if (finishedCount >= finishedCountToMove || generation / (posChanges + 1) > 30)
+        //        if (finishedCount >= finishedCountToMove || generation / (posChanges + 1) > 30)
         {
             var start = getRandomSpotOnFloor();
-//            var finish = getRandomSpotOnFloor();
+            //            var finish = getRandomSpotOnFloor();
 
             posStart.position = new Vector3(start.x, start.y, posStart.position.z);
-//            posFinish.position = new Vector3(finish.x, finish.y, posFinish.position.z);
+            //            posFinish.position = new Vector3(finish.x, finish.y, posFinish.position.z);
 
             posChanges++;
         }
@@ -186,18 +188,18 @@ public class OvermindRandom : MonoBehaviour
 
         while (!onFloor)
         {
-            x = (int) Random.Range(-18f, 24f);
-            y = (int) Random.Range(-3.518f, 19.5f);
+            x = (int)Random.Range(-18f, 24f);
+            y = (int)Random.Range(-3.518f, 19.5f);
 
             //Debug.Log(floorMap.GetTile(new Vector3Int(x, y, 0)));
             //Debug.Log(wallMap.GetTile(new Vector3Int(x, y, 0)));
             //Debug.Log("------------------");
 
-//            if ((y < 9.5f && x < 4.514f
-//                || x > -0.515f && x < 0.515f
-//                || x > 3.5f && y < 12.5f && y > 9.5f)
-//                &&
-//                !(x > -4f && y > 5.5f && x < -2.45f && y > 9.5f))
+            //            if ((y < 9.5f && x < 4.514f
+            //                || x > -0.515f && x < 0.515f
+            //                || x > 3.5f && y < 12.5f && y > 9.5f)
+            //                &&
+            //                !(x > -4f && y > 5.5f && x < -2.45f && y > 9.5f))
             if (floorMap.GetTile(new Vector3Int(x, y, 0)) != null && wallMap.GetTile(new Vector3Int(x, y, 0)) == null)
                 onFloor = true;
         }
@@ -271,6 +273,15 @@ public class OvermindRandom : MonoBehaviour
             finishedCount++;
         agentCountCurrent--;
         if (agentCountCurrent <= 0)
-            startNewGeneration();
+        {
+            if (generation <= max_gen_count)
+            {
+                startNewGeneration();
+            }
+            else
+            {
+                Application.Quit();
+            }
+        }
     }
 }

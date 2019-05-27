@@ -5335,7 +5335,7 @@ MonoBehaviour:
   maxSteps: 1000
   agentPrefab: {fileID: 7155626595190983555, guid: 9ead7fe9bdcb10c4382f4365898eff94,
     type: 3}
-  mutationRate: 0.005
+  mutationRate: 0.02
 --- !u!4 &2035270004
 Transform:
   m_ObjectHideFlags: 0

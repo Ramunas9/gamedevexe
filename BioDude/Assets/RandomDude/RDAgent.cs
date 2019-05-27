@@ -114,6 +114,7 @@ public class RDAgent : MonoBehaviour
             //old version - gives 0 value if no hit and jumps to max value if hit at max range
             //vision[i] = visionDistance - hit.distance;
 
+            //new version - returns the length of the raycast
             vision[i] = hit.distance == 0f ? visionDistance: hit.distance;
             //Debug.Log(i + ": " + vision[i]);
         }

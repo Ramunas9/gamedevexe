@@ -40,15 +40,18 @@ public class RDAgent : MonoBehaviour
     private const float visionLinesZ = -9.4f;
     private const float decisionLinesZ = -9.3f;
 
+    public bool agent_moved;
+
     // Start is called before the first frame update
     void Start()
     {
+        agent_moved = false;
         rb = GetComponent<Rigidbody2D>();
         overmind = GameObject.FindGameObjectWithTag("Overmind").GetComponent<OvermindRandom>();
         stepCount = 0;
         stepCountMax = overmind.maxSteps;
 
-        brain = new NeuralNetwork(9, 36, 4);
+        brain = new NeuralNetwork(9, 36, 8);
 
         staticLines = transform.GetChild(1).GetComponentsInChildren<LineRenderer>();
         visionLines = transform.GetChild(2).GetComponentsInChildren<LineRenderer>();
@@ -60,17 +63,32 @@ public class RDAgent : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (dead || finished) return;
+        if (dead || finished)
+        {
+            return;
+        }
+        if (agent_moved)
+        {
+            //Debug.Log("can't move");
+            return;
+        }
+
 
         if (stepCount < stepCountMax)
         {
             float[] vision = look();
             int direction = decideDirection(vision);
-//            Vector2 averageDirection = averageDirections(vision);
+            //            Vector2 averageDirection = averageDirections(vision);
 
-            rb.AddForce(translateIndexToDirection(direction) * moveForce); // take a step from steps array
+            //rb.AddForce(translateIndexToDirection(direction) * moveForce); // take a step from steps array
+
+            Vector2 dir = translateIndexToDirection(direction);
+
+            transform.position += new Vector3(dir.x, dir.y, 0) * moveForce;
 //            rb.AddForce(averageDirection * moveForce); // take a step from steps array
             stepCount++;
+            overmind.updated_count++;
+            agent_moved = true;
         }
         else
         {
@@ -142,6 +160,8 @@ public class RDAgent : MonoBehaviour
         Vector2 average = Vector2.zero;
         decision = brain.output(vision);
 
+        
+
         Vector3 linePosDecisionStart = transform.position;
         linePosDecisionStart.z = decisionLinesZ;
 
@@ -160,6 +180,14 @@ public class RDAgent : MonoBehaviour
     int decideDirection(float[] vision)
     {
         decision = brain.output(vision);
+
+        //output decision to text
+        if (overmind.first_output)
+        {
+            overmind.first_output = false;
+            brain.outputPanelNN.text = Matrix.singleColumnMatrixFromArray(decision).output();
+        }
+
 
         //get the maximum value in the output array and use this as the decision on which direction to go
         float max = 0;
@@ -181,7 +209,7 @@ public class RDAgent : MonoBehaviour
 
             var end = translateIndexToDirection(i) * decision[i] * visionDistance;
             Vector3 linePosDecisionEnd = transform.position + new Vector3(end.x, end.y, decisionLinesZ);
-            decisionLines[i].SetPositions(new[] {linePosDecisionStart, linePosDecisionEnd});
+            //decisionLines[i].SetPositions(new[] {linePosDecisionStart, linePosDecisionEnd});
         }
 
         return maxIndex;
@@ -219,11 +247,19 @@ public class RDAgent : MonoBehaviour
         switch (index)
         {
             case 1:
-                return Vector2.right;
+                return Vector2.up + Vector2.right;
             case 2:
-                return Vector2.down;
+                return Vector2.right;
             case 3:
+                return Vector2.right + Vector2.down;
+            case 4:
+                return Vector2.down;
+            case 5:
+                return Vector2.down + Vector2.left;
+            case 6:
                 return Vector2.left;
+            case 7:
+                return Vector2.left + Vector2.up;
             default:
                 return Vector2.up;
         }

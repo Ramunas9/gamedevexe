@@ -220,7 +220,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 298098748}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2063984179}
@@ -228,7 +228,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -604, y: 428.1}
+  m_AnchoredPosition: {x: -604, y: 406}
   m_SizeDelta: {x: 664, y: 266.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &298098750
@@ -11632,7 +11632,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1274138575}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2063984179}
@@ -11640,7 +11640,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -604, y: 428.1}
+  m_AnchoredPosition: {x: -604, y: 406}
   m_SizeDelta: {x: 664, y: 266.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1274138577
@@ -12312,7 +12312,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1869591769}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2063984179}
@@ -12320,7 +12320,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -673.9, y: -127.9}
+  m_AnchoredPosition: {x: -673.9, y: -150.00002}
   m_SizeDelta: {x: 524.3, y: 844.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1869591771
@@ -12469,12 +12469,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 152087241bcf8434bb0bd570bf16e4c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agentCount: 100
-  maxSteps: 1000
+  first_output: 0
+  updated_count: 0
+  next_update: 0
+  agentCount: 30
+  maxSteps: 500
   agentPrefab: {fileID: 7155626595190983555, guid: 9ead7fe9bdcb10c4382f4365898eff94,
     type: 3}
   mutationRate: 0.02
   finishedCountToMove: 90
+  finishedCount: 0
 --- !u!4 &2035270004
 Transform:
   m_ObjectHideFlags: 0
@@ -12526,7 +12530,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_TargetDisplay: 0
 --- !u!224 &2063984179
 RectTransform:

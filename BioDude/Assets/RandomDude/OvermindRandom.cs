@@ -16,6 +16,10 @@ using System.IO;
 
 public class OvermindRandom : MonoBehaviour
 {
+    public bool first_output;
+
+    public int updated_count;
+    public bool next_update;
     public int agentCount;
     public int maxSteps;
     public Transform agentPrefab;
@@ -32,7 +36,7 @@ public class OvermindRandom : MonoBehaviour
 
     private int agentCountCurrent;
     private int bestAgentIndex;
-    private int finishedCount;
+    public int finishedCount;
 
     private Tilemap floorMap;
     private Tilemap wallMap;
@@ -44,6 +48,8 @@ public class OvermindRandom : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        first_output = true;
+
         filename = string.Format("{0:yyyy-MM-dd}_{1}__result.csv", System.DateTime.Now, System.DateTime.Now.ToString("HH;mm;ss"));
 
         posFinish = GameObject.Find("PositionFinish").transform;
@@ -64,10 +70,27 @@ public class OvermindRandom : MonoBehaviour
         Destroy(agentsFolder.GetChild(0).gameObject);
 
         startNewGeneration();
+
+    }
+
+    void Update()
+    {
+        //if (updated_count == (agentCount - finishedCount))
+        if (updated_count >= agentCountCurrent)
+        {
+            for (int i = 0; i < agents.Length; i++)
+            {
+                agents[i].agent_moved = false;
+            }
+            updated_count = 0;
+            first_output = true;
+        }
     }
 
     void startNewGeneration()
     {
+        next_update = false;
+
         generation++;
 
         if (generation > 1) // don't need fitness or mutation on first gen
@@ -99,7 +122,7 @@ public class OvermindRandom : MonoBehaviour
             for (int i = 0; i < agentCount; i++)
                 agents[i].brain = newBrains[i].clone();
 
-            moveStartAndFinishPos();
+            //moveStartAndFinishPos();
             //activate agents
             for (int i = 0; i < agentCount; i++)
                 agents[i].Revive();
@@ -108,6 +131,10 @@ public class OvermindRandom : MonoBehaviour
         agentCountCurrent = agentCount;
         for (int i = 0; i < agentCount; i++) // put agents into starting position
             agents[i].transform.position = posStart.position;
+
+        finishedCount = 0;
+
+        next_update = true;
     }
 
     void UpdateStatusText()
@@ -154,8 +181,6 @@ public class OvermindRandom : MonoBehaviour
 
             posChanges++;
         }
-
-        finishedCount = 0;
     }
 
     Vector2 getRandomSpotOnFloor()

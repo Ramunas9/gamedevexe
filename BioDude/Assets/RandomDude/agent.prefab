@@ -1258,9 +1258,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7155626595190983555}
+  - component: {fileID: 7153913101886639520}
   - component: {fileID: 7173564194629678483}
   - component: {fileID: 7201312949115148729}
-  - component: {fileID: 7153913101886639520}
   m_Layer: 11
   m_Name: agent
   m_TagString: Agent
@@ -1286,6 +1286,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7153913101886639520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7153913101886639521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c11fb525c735a6f408204a16cf96384e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hp: 1
+  moveForce: 0.2
+  visionDistance: 2
+  dead: 0
+  stepCount: 0
+  agent_moved: 0
 --- !u!58 &7173564194629678483
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1323,23 +1341,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &7153913101886639520
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7153913101886639521}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c11fb525c735a6f408204a16cf96384e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hp: 1
-  moveForce: 200
-  visionDistance: 2
-  dead: 0
-  stepCount: 0
 --- !u!1 &7153960453583607471
 GameObject:
   m_ObjectHideFlags: 0

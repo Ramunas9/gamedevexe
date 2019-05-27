@@ -56,31 +56,13 @@ public class OvermindRandom : MonoBehaviour
             UpdateStatusText();
 
             ResultsToFile();
-
-            // natural selection
+            
             if (bestAgentIndex != 0) // put the best agent in first position
                 Swap(agents[0], agents[bestAgentIndex]);
-
-            // create parents off unmodified agents
-            int[][] parents = new int[agentCount][];
+            
             for (int i = 1; i < agentCount; i++)
             {
-                //parents[i] = getRandParent();
-                //getRandParent(ref parents[i]);
-                parents[i] = new int[maxSteps];
-                Debug.Log("maxsteps: " + maxSteps);
-                int index = getRandParent(fitnessSum);
-                System.Array.Copy(agents[index].steps, parents[i], maxSteps);
-                Debug.Log("agent: " + agents[index].steps[0]);
-                Debug.Log("parent: " + parents[i][0]);
-            }
-
-            Debug.Log("parent AFTER: " + parents[1][0]);
-
-            // get parent steps, mutate them and assign to agent
-            for (int i = 1; i < agentCount; i++)
-            {
-                agents[i].cloneSteps(parents[i]);
+                agents[i].cloneSteps(agents[0].steps);
                 agents[i].mutate(mutationRate);
             }
 

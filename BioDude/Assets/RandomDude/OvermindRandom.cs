@@ -5,6 +5,8 @@ using System.IO;
 
 public class OvermindRandom : MonoBehaviour
 {
+    public int updated_count;
+
     public int agentCount;
     public int maxSteps;
     public Transform agentPrefab;
@@ -16,6 +18,7 @@ public class OvermindRandom : MonoBehaviour
     private Transform agentsFolder;
     private RDAgent[] agents;
     private int generation;
+    public int finishedCount;
 
     private int agentCountCurrent;
     private int bestAgentIndex;
@@ -43,6 +46,19 @@ public class OvermindRandom : MonoBehaviour
         Destroy(agentsFolder.GetChild(0).gameObject);
 
         startNewGeneration();
+    }
+
+    void Update()
+    {
+        //if (updated_count == (agentCount - finishedCount))
+        if (updated_count >= agentCountCurrent)
+        {
+            for (int i = 0; i < agents.Length; i++)
+            {
+                agents[i].agent_moved = false;
+            }
+            updated_count = 0;
+        }
     }
 
     void startNewGeneration()
@@ -177,8 +193,17 @@ public class OvermindRandom : MonoBehaviour
     /// <summary>
     /// ////////////////////////////// PUBLIC METHODS ////////////////////////
     /// </summary>
-    public void agentDone()
+    /*public void agentDone()
     {
+
+        agentCountCurrent--;
+        if (agentCountCurrent <= 0)
+            startNewGeneration();
+    }*/
+    public void agentDone(bool finished)
+    {
+        if (finished)
+            finishedCount++;
         agentCountCurrent--;
         if (agentCountCurrent <= 0)
             startNewGeneration();

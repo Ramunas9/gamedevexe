@@ -146,6 +146,11 @@ public class OvermindRandom : MonoBehaviour
 
     void ResultsToFile()
     {
+        if (!Directory.Exists("Results"))
+        {
+            Directory.CreateDirectory("Results");
+        }
+
         if (!File.Exists("Results/" + filename))
         {
             using (var sw = new StreamWriter("Results/" + filename, true))

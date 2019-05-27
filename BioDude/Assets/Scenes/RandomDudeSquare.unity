@@ -530,6 +530,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1209145362}
     m_Modifications:
+    - target: {fileID: 20344499511803096, guid: 18713b26ccded404ab074b4370340abf,
+        type: 3}
+      propertyPath: orthographic size
+      value: 12.9
+      objectReference: {fileID: 0}
     - target: {fileID: 4156486024135672, guid: 18713b26ccded404ab074b4370340abf, type: 3}
       propertyPath: m_LocalPosition.x
       value: -631.5
@@ -561,11 +566,6 @@ PrefabInstance:
     - target: {fileID: 4156486024135672, guid: 18713b26ccded404ab074b4370340abf, type: 3}
       propertyPath: m_RootOrder
       value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 20344499511803096, guid: 18713b26ccded404ab074b4370340abf,
-        type: 3}
-      propertyPath: orthographic size
-      value: 12.9
       objectReference: {fileID: 0}
     - target: {fileID: 114795309266312674, guid: 18713b26ccded404ab074b4370340abf,
         type: 3}
@@ -9459,7 +9459,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1369361002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.13, y: -1.46, z: 0}
+  m_LocalPosition: {x: 21, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_Children: []
   m_Father: {fileID: 604402281}
@@ -12469,6 +12469,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 152087241bcf8434bb0bd570bf16e4c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  max_gen_count: 3000
   updated_count: 0
   agentCount: 100
   maxSteps: 600

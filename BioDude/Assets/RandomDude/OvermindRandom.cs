@@ -99,7 +99,7 @@ public class OvermindRandom : MonoBehaviour
             for (int i = 0; i < agentCount; i++)
                 agents[i].brain = newBrains[i].clone();
 
-//            moveStartAndFinishPos();
+            moveStartAndFinishPos();
             //activate agents
             for (int i = 0; i < agentCount; i++)
                 agents[i].Revive();

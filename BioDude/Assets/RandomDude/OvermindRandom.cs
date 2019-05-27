@@ -86,14 +86,10 @@ public class OvermindRandom : MonoBehaviour
                 //parents[i] = getRandParent();
                 //getRandParent(ref parents[i]);
                 parents[i] = new int[maxSteps];
-                Debug.Log("maxsteps: " + maxSteps);
                 int index = getRandParent(fitnessSum);
                 System.Array.Copy(agents[index].steps, parents[i], maxSteps);
-                Debug.Log("agent: " + agents[index].steps[0]);
-                Debug.Log("parent: " + parents[i][0]);
             }
 
-            Debug.Log("parent AFTER: " + parents[1][0]);
 
             // get parent steps, mutate them and assign to agent
             for (int i = 1; i < agentCount; i++)
@@ -112,7 +108,6 @@ public class OvermindRandom : MonoBehaviour
         for (int i = 0; i < agentCount; i++) // put agents into starting position
             agents[i].transform.position = posStart.position;
 
-        Debug.Log(agentCountCurrent);
     }
 
     void UpdateStatusText()
@@ -127,6 +122,10 @@ public class OvermindRandom : MonoBehaviour
 
     void ResultsToFile()
     {
+        if (!Directory.Exists("Results"))
+        {
+            Directory.CreateDirectory("Results");
+        }
         if (!File.Exists("Results/" + filename))
         {
             using (var sw = new StreamWriter("Results/" + filename, true))
@@ -140,7 +139,7 @@ public class OvermindRandom : MonoBehaviour
         using (var sw = new StreamWriter("Results/" + filename, true))
         {
             sw.WriteLine(string.Format(
-                "{0},{1},{2},{3},{4},{5}", generation, agentCount, mutationRate,
+                "{0},{1},{2},{3},{4},{5},{6}", generation, agentCount, mutationRate,
                 agents[bestAgentIndex].fitness, fitnessSum / agentCount, maxSteps, finishedCount
                 ));
         }
@@ -154,7 +153,6 @@ public class OvermindRandom : MonoBehaviour
         {
             agents[i].calculateFitness();
             sum += agents[i].fitness;
-            Debug.Log(i + " -- " + agents[i].stepCount + " -- " + agents[i].fitness + " -- " + agents[i].finished);
 
             if (agents[i].fitness > max)
             {

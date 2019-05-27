@@ -48,7 +48,7 @@ public class RDAgent : MonoBehaviour
         stepCount = 0;
         stepCountMax = overmind.maxSteps;
 
-        brain = new NeuralNetwork(9, 8, 4);
+        brain = new NeuralNetwork(9, 36, 4);
 
         staticLines = transform.GetChild(1).GetComponentsInChildren<LineRenderer>();
         visionLines = transform.GetChild(2).GetComponentsInChildren<LineRenderer>();

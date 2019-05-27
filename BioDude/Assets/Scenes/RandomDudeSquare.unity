@@ -12469,14 +12469,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 152087241bcf8434bb0bd570bf16e4c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  max_gen_count: 3000
   first_output: 0
   updated_count: 0
   next_update: 0
-  agentCount: 30
-  maxSteps: 500
+  agentCount: 100
+  maxSteps: 600
   agentPrefab: {fileID: 7155626595190983555, guid: 9ead7fe9bdcb10c4382f4365898eff94,
     type: 3}
-  mutationRate: 0.02
+  mutationRate: 0.05
   finishedCountToMove: 90
   finishedCount: 0
 --- !u!4 &2035270004

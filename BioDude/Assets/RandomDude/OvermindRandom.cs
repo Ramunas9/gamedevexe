@@ -16,6 +16,8 @@ using System.IO;
 
 public class OvermindRandom : MonoBehaviour
 {
+    public int max_gen_count = 3000;
+
     public bool first_output;
 
     public int updated_count;
@@ -70,7 +72,6 @@ public class OvermindRandom : MonoBehaviour
         Destroy(agentsFolder.GetChild(0).gameObject);
 
         startNewGeneration();
-
     }
 
     void Update()
@@ -150,6 +151,10 @@ public class OvermindRandom : MonoBehaviour
 
     void ResultsToFile()
     {
+        if (!Directory.Exists("Results"))
+        {
+            Directory.CreateDirectory("Results");
+        }
         if (!File.Exists("Results/" + filename))
         {
             using (var sw = new StreamWriter("Results/" + filename, true))
@@ -275,6 +280,15 @@ public class OvermindRandom : MonoBehaviour
             finishedCount++;
         agentCountCurrent--;
         if (agentCountCurrent <= 0)
-            startNewGeneration();
+        {
+            if (generation <= max_gen_count)
+            {
+                startNewGeneration();
+            }
+            else
+            {
+                Application.Quit();
+            }
+        }
     }
 }
